@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google" content="notranslate">
+    <title>Wildlife Safari: Conservation Vocab!</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            overflow: hidden;
+            background-color: #0f172a;
+        }
+
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(-25%); animation-timing-function: cubic-bezier(0.8,0,1,1); }
+            50% { transform: none; animation-timing-function: cubic-bezier(0,0,0.2,1); }
+        }
+
+        .animate-bounce-custom {
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes pulse-heart {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+
+        .heart-active {
+            color: #ef4444;
+            fill: #ef4444;
+            animation: pulse-heart 1.5s infinite;
+        }
+
+        .heart-inactive {
+            color: #d1d5db;
+            fill: none;
+        }
+
+        .no-select {
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+    </style>
+</head>
+<body class="no-select text-slate-800">
+
+    <!-- OFFLINE BADGE INDICATOR -->
+    <div id="offline-badge" class="hidden absolute top-4 left-4 z-50 bg-red-600/90 text-white text-xs font-bold px-4 py-2 rounded-full shadow-lg backdrop-blur-sm border border-red-400 flex items-center space-x-2 animate-pulse">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"></path><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"></path><line x1="2" y1="2" x2="22" y2="22"></line></svg>
+        <span id="offline-text">Offline Mode (Local Only)</span>
+    </div>
+
+    <!-- DECORATIVE BACKGROUNDS -->
+    <div id="bg-decorations" class="hidden">
+        <div class="fixed top-[-10%] left-[-10%] w-96 h-96 bg-indigo-300/20 rounded-full blur-3xl pointer-events-none -z-10"></div>
+        <div class="fixed bottom-[-10%] right-[-10%] w-[40rem] h-[40rem] bg-pink-300/20 rounded-full blur-3xl pointer-events-none -z-10"></div>
+    </div>
+
+    <!-- WELCOME SCREEN -->
+    <div id="welcome-screen" class="min-h-screen w-full bg-gradient-to-br from-indigo-900 via-purple-800 to-indigo-900 flex flex-col items-center justify-center p-6 text-white absolute inset-0 z-10 transition-opacity duration-300 overflow-y-auto">
+        
+        <div class="flex flex-col lg:flex-row items-center lg:items-stretch justify-center gap-8 w-full max-w-6xl z-10 my-auto mt-12 md:mt-auto">
+            
+            <!-- LEFT PANEL: Main Game Start -->
+            <div class="max-w-2xl w-full text-center space-y-8 p-8 md:p-10 bg-white/10 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20 animate-fade-in-up flex flex-col justify-center">
+                <div class="inline-block p-4 bg-gradient-to-tr from-pink-500 to-orange-400 rounded-full shadow-lg mx-auto w-max">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"></path></svg>
+                </div>
+                <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-pink-300 via-purple-300 to-indigo-300 drop-shadow-sm">
+                    Wildlife Safari
+                </h1>
+                <h2 class="text-2xl md:text-3xl font-semibold text-indigo-200">
+                    Conservation Vocabulary Challenge!
+                </h2>
+                <p class="text-lg text-gray-300 max-w-md mx-auto hidden md:block">
+                    Master Wildlife and Conservation Vocabulary. Over 200+ unique exercises!
+                </p>
+
+                <div class="max-w-sm mx-auto w-full mt-4 mb-4 relative">
+                    <input type="text" id="player-name" placeholder="Enter your name to start..." class="w-full px-6 py-4 rounded-full text-slate-800 font-bold text-xl text-center focus:outline-none focus:ring-4 focus:ring-pink-500 shadow-inner" maxlength="20">
+                    <p id="name-error" class="hidden text-red-300 font-semibold mt-2 drop-shadow-md">Please enter your name!</p>
+                </div>
+
+                <div class="flex flex-col items-center space-y-4">
+                    <button onclick="startGame()" class="group relative px-8 py-4 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full font-bold text-xl md:text-2xl shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 active:scale-95 flex items-center justify-center mx-auto space-x-3 overflow-hidden">
+                        <span class="absolute inset-0 w-full h-full bg-white/20 group-hover:animate-pulse"></span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                        <span>Start Learning</span>
+                    </button>
+                    <p class="text-white/50 text-sm font-medium tracking-wide">
+                        Developed by: Hugo Luque
+                    </p>
+                </div>
+            </div>
+
+            <!-- RIGHT PANEL: Mini Leaderboard -->
+            <div class="w-full lg:w-80 bg-black/20 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/10 animate-fade-in-up p-6 flex flex-col relative overflow-hidden" style="animation-delay: 0.1s;">
+                <div class="absolute top-0 right-0 p-16 bg-amber-500/10 blur-3xl rounded-full pointer-events-none"></div>
+                
+                <h3 class="text-amber-400 font-black text-2xl mb-6 flex items-center justify-center space-x-2 border-b border-white/10 pb-4 relative z-10">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path></svg>
+                    <span>Top 5 Explorers</span>
+                </h3>
+                
+                <div id="mini-leaderboard-list" class="space-y-3 text-sm flex-1 relative z-10">
+                    <p class="text-gray-400 text-center mt-8">Connecting to Sheets...</p>
+                </div>
+                
+                <button onclick="showLeaderboard('welcome-screen')" class="mt-6 w-full py-4 bg-indigo-600/30 hover:bg-indigo-600/50 rounded-2xl text-indigo-200 hover:text-white text-sm md:text-base font-bold transition-all border border-indigo-400/30 relative z-10 shadow-lg">
+                    View Full Global Leaderboard
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- COUNTDOWN SCREEN -->
+    <div id="countdown-screen" class="hidden min-h-screen w-full bg-slate-900 flex items-center justify-center text-white absolute inset-0 z-20">
+        <div class="text-center">
+            <h1 id="countdown-text" class="text-9xl md:text-[12rem] font-black text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500 animate-bounce-custom drop-shadow-[0_0_30px_rgba(74,222,128,0.5)]">
+                3
+            </h1>
+        </div>
+    </div>
+
+    <!-- PLAYING SCREEN -->
+    <div id="playing-screen" class="hidden min-h-screen w-full bg-slate-50 flex flex-col absolute inset-0 z-10 overflow-y-auto">
+        
+        <!-- Header -->
+        <header class="w-full bg-white shadow-sm p-4 flex justify-between items-center z-10 sticky top-0">
+            <div class="flex items-center space-x-2">
+                <div id="level-display" class="bg-indigo-100 text-indigo-800 px-4 py-2 rounded-full font-black text-lg shadow-inner">
+                    Level 1
+                </div>
+            </div>
+
+            <button onclick="stopGame()" class="text-gray-400 hover:text-red-500 transition-colors p-2" title="Stop Game">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+            </button>
+
+            <div class="flex items-center space-x-6">
+                <div id="hearts-container" class="flex items-center space-x-1">
+                    <!-- Hearts generated by JS -->
+                </div>
+                <div class="text-2xl font-black text-slate-700">
+                    <span id="score-display">0</span> <span class="text-sm font-medium text-slate-500">PTS</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Timer Bar -->
+        <div class="w-full bg-slate-200 h-2 z-10 relative">
+            <div id="timer-bar" class="bg-gradient-to-r from-green-400 to-emerald-500 h-2 transition-all duration-100 ease-linear" style="width: 100%"></div>
+        </div>
+        <div class="w-full text-center absolute top-20 z-10 pointer-events-none">
+            <span id="timer-text" class="text-xl font-black text-slate-400 drop-shadow-sm hidden">15s</span>
+        </div>
+
+        <!-- Main Game Area -->
+        <main class="flex-1 flex flex-col items-center justify-center p-4 w-full max-w-4xl mx-auto relative z-0">
+            
+            <!-- Feedback Overlay -->
+            <div id="feedback-overlay" class="hidden absolute inset-0 z-30 flex items-center justify-center pointer-events-none">
+                <h2 id="feedback-text" class="text-4xl md:text-6xl font-black drop-shadow-2xl animate-bounce-custom text-center text-white bg-indigo-500 px-8 py-4 rounded-full border-4 border-white shadow-2xl inline-block">
+                    Wow!
+                </h2>
+            </div>
+
+            <!-- Question Card -->
+            <div id="question-card" class="w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(8,_112,_184,_0.07)] border border-slate-100 p-6 md:p-10 flex flex-col relative overflow-hidden hidden">
+                
+                <div class="flex items-start justify-between mb-8 md:mb-12">
+                    <h2 id="question-text" class="text-3xl md:text-5xl font-bold leading-tight text-slate-800 flex-1">
+                        <!-- Question injected by JS -->
+                    </h2>
+                    <button onclick="playCurrentAudio()" class="ml-4 p-4 bg-indigo-50 text-indigo-600 rounded-full hover:bg-indigo-100 hover:scale-110 transition-all shadow-sm active:scale-95 flex-shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
+                    </button>
+                </div>
+
+                <!-- Options -->
+                <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 w-full">
+                    <!-- Buttons injected by JS -->
+                </div>
+
+                <!-- Hint Section -->
+                <div class="mt-8 flex flex-col items-center border-t border-slate-100 pt-6 min-h-[80px]">
+                    <button id="show-hint-btn" onclick="showHint()" class="flex items-center space-x-2 text-amber-500 hover:text-amber-600 font-medium px-4 py-2 rounded-full hover:bg-amber-50 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1.3.5 2.6 1.5 3.5.8.8 1.3 1.5 1.5 2.5"></path><line x1="9" y1="18" x2="15" y2="18"></line><line x1="10" y1="22" x2="14" y2="22"></line></svg>
+                        <span>Show Hint</span>
+                    </button>
+                    
+                    <div id="hint-content" class="hidden bg-amber-50 text-amber-800 p-4 rounded-xl flex items-start space-x-3 w-full max-w-2xl animate-fade-in-up">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0 mt-1 text-amber-500"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1.3.5 2.6 1.5 3.5.8.8 1.3 1.5 1.5 2.5"></path><line x1="9" y1="18" x2="15" y2="18"></line><line x1="10" y1="22" x2="14" y2="22"></line></svg>
+                        <p id="hint-text" class="text-lg"></p>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- GAMEOVER SCREEN -->
+    <div id="gameover-screen" class="hidden min-h-screen w-full bg-gradient-to-br from-red-900 via-gray-900 to-black flex items-center justify-center p-6 text-white absolute inset-0 z-30">
+        <div class="max-w-md w-full text-center space-y-6 p-8 bg-white/10 backdrop-blur-md rounded-3xl shadow-2xl border border-red-500/30 animate-fade-in-up">
+            <h1 class="text-5xl font-black text-red-500 drop-shadow-md">Game Over</h1>
+            <p class="text-2xl text-gray-300">Level Reached: <span id="final-level" class="font-bold text-white">1</span></p>
+            <p class="text-2xl text-gray-300">Final Score: <span id="final-score" class="font-bold text-white">0</span></p>
+            <p class="text-xl text-gray-400">Total Time Alive: <span id="final-time" class="font-bold text-white">0</span>s</p>
+            
+            <button onclick="showLeaderboard('gameover-screen')" class="w-full py-4 bg-gradient-to-r from-amber-500 to-orange-600 rounded-2xl font-bold text-xl shadow-lg hover:scale-105 transition-transform active:scale-95 flex items-center justify-center space-x-2 mt-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20h20"></path><path d="M5 20V6a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v14"></path><path d="M9 20V12h6v8"></path></svg>
+                <span>View Leaderboard</span>
+            </button>
+
+            <button onclick="startGame()" class="mt-4 w-full py-4 bg-gradient-to-r from-pink-500 to-purple-600 rounded-2xl font-bold text-xl shadow-lg hover:scale-105 transition-transform active:scale-95 flex items-center justify-center space-x-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+                <span>Play Again</span>
+            </button>
+            <button onclick="stopGame()" class="w-full py-4 bg-gray-700/50 hover:bg-gray-700 rounded-2xl font-bold text-xl shadow-lg transition-colors flex items-center justify-center space-x-2">
+                <span>Main Menu</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- LEADERBOARD SCREEN -->
+    <div id="leaderboard-screen" class="hidden min-h-screen w-full bg-slate-900 flex flex-col items-center justify-center p-6 text-white absolute inset-0 z-40 overflow-y-auto">
+        <div class="max-w-2xl w-full space-y-6 p-8 bg-white/10 backdrop-blur-md rounded-3xl shadow-2xl border border-white/20 animate-fade-in-up mt-10 mb-10">
+            <h1 class="text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-orange-500 drop-shadow-md text-center">Live Top 10 Leaderboard</h1>
+            
+            <div class="bg-black/30 rounded-2xl overflow-hidden mt-6">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-white/10 text-gray-300 text-sm md:text-base uppercase tracking-wider">
+                            <th class="p-4 border-b border-white/10">Rank</th>
+                            <th class="p-4 border-b border-white/10">Name</th>
+                            <th class="p-4 border-b border-white/10 text-center">Score</th>
+                            <th class="p-4 border-b border-white/10 text-right">Time (s)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-list" class="text-base md:text-lg">
+                        <!-- Filled by JS -->
+                        <tr><td colspan="4" class="text-center p-4 text-gray-400">Loading live records...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="flex justify-center mt-8">
+                <button id="lb-back-btn" onclick="switchScreen('welcome-screen')" class="w-full md:w-1/2 py-4 bg-gray-600 hover:bg-gray-500 rounded-2xl font-bold text-xl shadow-lg transition-colors flex items-center justify-center space-x-2">
+                    <span>Back</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // URL DE GOOGLE APPS SCRIPT
+        const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbzn0HOd8z1h7llmG8Z6aRJvFpb1EbppwBqeSzCnJx8tKl6A03cxdXRqJEgGDS0qLNCxKQ/exec"; 
+
+        // --- GLOBAL VARIABLES ---
+        let playerName = "";
+        let score = 0;
+        let lives = 5;
+        let level = 1;
+        let currentQ = null;
+        let isProcessing = false;
+
+        let questionTimeLimit = 15;
+        let currentTimer = 15;
+        let timerInterval = null;
+        let totalTimeAlive = 0;
+        let questionStartTime = 0;
+
+        let leaderboardData = []; 
+        let leaderboardPollingInterval = null;
+        let userIP = "unknown"; 
+
+        // Obtener IP del usuario al cargar la página
+        async function fetchUserIP() {
+            try {
+                const res = await fetch("https://api.ipify.org?format=json");
+                const data = await res.json();
+                userIP = data.ip;
+            } catch (e) {
+                console.warn("No se pudo obtener la IP", e);
+            }
+        }
+        fetchUserIP();
+
+        // Check Setup
+        if (GOOGLE_SHEETS_URL.trim() === "") {
+            document.getElementById('offline-badge').classList.remove('hidden');
+            document.getElementById('offline-text').innerText = "URL de Google Sheets no configurada. Récords locales.";
+        }
+
+        // Load voices early
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.getVoices();
+        }
+
+        // --- NUEVO VOCABULARIO (40 palabras del PDF Wildlife) ---
+        const VOCAB_WORDS = [
+            "Endangered", "Sanctuary", "Habitat", "Poacher", "Captive", "Conservation", 
+            "Extinct", "Biodiversity", "Ecosystem", "Deforestation", "Species", 
+            "Preservation", "Vulnerable", "Flora", "Fauna", "Predator", "Prey", 
+            "Migration", "Sustainability", "Reforestation", "Overfishing", "Exploitation", 
+            "Smuggling", "Reserve", "Breeding", "Extinction", "Ecology", "Wildlife", 
+            "Threatened", "Carnivore", "Herbivore", "Omnivore", "Food chain", 
+            "Adaptation", "Enclosure", "Reintroduction", "Marine", "Terrestrial", 
+            "Tracker", "Ranger"
+        ];
+
+        const HINTS = {
+            "Endangered": "A species at serious risk of extinction.",
+            "Sanctuary": "A protected area where animals can live safely.",
+            "Habitat": "The natural home or environment of an animal, plant, or organism.",
+            "Poacher": "A person who illegally hunts or captures wild animals.",
+            "Captive": "Animals kept in confinement, not living in the wild.",
+            "Conservation": "The careful protection and preservation of nature and wildlife.",
+            "Extinct": "A species that has no living members left in the world.",
+            "Biodiversity": "The variety of plant and animal life in the world or in a particular habitat.",
+            "Ecosystem": "A biological community of interacting organisms and their physical environment.",
+            "Deforestation": "The action of clearing a wide area of trees.",
+            "Species": "A group of living organisms consisting of similar individuals.",
+            "Preservation": "Maintaining something in its original or existing state.",
+            "Vulnerable": "A species likely to become endangered unless circumstances improve.",
+            "Flora": "The plants of a particular region or habitat.",
+            "Fauna": "The animals of a particular region or habitat.",
+            "Predator": "An animal that naturally preys on others for food.",
+            "Prey": "An animal that is hunted and killed by another for food.",
+            "Migration": "The seasonal movement of animals from one region to another.",
+            "Sustainability": "Avoiding the depletion of natural resources to maintain ecological balance.",
+            "Reforestation": "The process of replanting an area with trees.",
+            "Overfishing": "Depleting the stock of fish in a body of water by excessive fishing.",
+            "Exploitation": "The action of making use of and benefiting from resources, often unfairly.",
+            "Smuggling": "The illegal transport of animals or animal parts across borders.",
+            "Reserve": "A protected area of land set aside for wildlife or indigenous peoples.",
+            "Breeding": "The mating and production of offspring by animals.",
+            "Extinction": "The state or process of a species, family, or larger group dying out completely.",
+            "Ecology": "The branch of biology that deals with the relations of organisms to one another.",
+            "Wildlife": "Wild animals collectively; the native fauna of a region.",
+            "Threatened": "Any species that is vulnerable to endangerment in the near future.",
+            "Carnivore": "An animal that feeds entirely on meat.",
+            "Herbivore": "An animal that feeds entirely on plants.",
+            "Omnivore": "An animal or person that eats food of both plant and animal origin.",
+            "Food chain": "A hierarchical series of organisms each dependent on the next as a source of food.",
+            "Adaptation": "A change by which an organism or species becomes better suited to its environment.",
+            "Enclosure": "An area that is sealed off with an artificial or natural barrier.",
+            "Reintroduction": "The action of putting a species back into a former habitat.",
+            "Marine": "Relating to or found in the sea.",
+            "Terrestrial": "Living on or relating to the land.",
+            "Tracker": "A person who follows the trail of wild animals.",
+            "Ranger": "A keeper of a park, forest, or area of countryside."
+        };
+
+        // --- 240 EJERCICIOS (6 por palabra, total > 200) ---
+        const QUESTION_BANK = [
+            // Endangered
+            { q: "The Bengal tiger is an ___ species due to habitat loss.", a: "Endangered" },
+            { q: "A species at serious risk of extinction is called ___.", a: "Endangered" },
+            { q: "Many ___ animals are protected by international laws to prevent extinction.", a: "Endangered" },
+            { q: "We must protect ___ species before they disappear forever.", a: "Endangered" },
+            { q: "The blue whale is an ___ marine mammal needing protection.", a: "Endangered" },
+            { q: "A population with dangerously low numbers is often classified as ___.", a: "Endangered" },
+            // Sanctuary
+            { q: "The elephant ___ provides a safe home for rescued animals.", a: "Sanctuary" },
+            { q: "A protected area where animals can live safely is a ___.", a: "Sanctuary" },
+            { q: "Hunting is strictly forbidden inside the wildlife ___.", a: "Sanctuary" },
+            { q: "After being rescued from the circus, the lion was taken to a ___.", a: "Sanctuary" },
+            { q: "The local bird ___ is entirely funded by donations.", a: "Sanctuary" },
+            { q: "Animals that cannot return to the wild live peacefully in a ___.", a: "Sanctuary" },
+            // Habitat
+            { q: "The jungle provides the perfect ___ for many colorful birds.", a: "Habitat" },
+            { q: "The natural home or environment of an animal is its ___.", a: "Habitat" },
+            { q: "Polar bears are losing their natural ___ due to melting ice.", a: "Habitat" },
+            { q: "Protecting a species also means protecting its ___.", a: "Habitat" },
+            { q: "Frogs need a damp ___ to survive and thrive.", a: "Habitat" },
+            { q: "Deforestation destroys the ___ of countless forest creatures.", a: "Habitat" },
+            // Poacher
+            { q: "Park rangers patrol the area to stop the ___ from hunting rhinos.", a: "Poacher" },
+            { q: "A person who illegally hunts or captures wild animals is a ___.", a: "Poacher" },
+            { q: "The ___ was caught trying to sell illegal ivory tusks.", a: "Poacher" },
+            { q: "Anti-___ units have been deployed in the national park.", a: "Poacher" },
+            { q: "It is very dangerous work to track an armed ___ in the jungle.", a: "Poacher" },
+            { q: "An elephant was unfortunately killed by a ___ for its ivory.", a: "Poacher" },
+            // Captive
+            { q: "The lion born in a ___ environment cannot easily be released into the wild.", a: "Captive" },
+            { q: "Animals kept in confinement, not living in the wild, are ___.", a: "Captive" },
+            { q: "Because the lion was raised in a ___ environment, it doesn't know how to hunt.", a: "Captive" },
+            { q: "Breeding ___ animals is a key strategy for some modern zoos.", a: "Captive" },
+            { q: "A ___ dolphin may not know how to survive in the open ocean.", a: "Captive" },
+            { q: "These birds have been ___ since they were chicks.", a: "Captive" },
+            // Conservation
+            { q: "Marine ___ projects aim to protect coral reefs.", a: "Conservation" },
+            { q: "The careful protection and preservation of nature is called ___.", a: "Conservation" },
+            { q: "Wildlife ___ is essential to keep our planet healthy.", a: "Conservation" },
+            { q: "She donated money to a turtle ___ charity.", a: "Conservation" },
+            { q: "A good ___ strategy involves the local community and education.", a: "Conservation" },
+            { q: "The documentary highlighted the importance of nature ___.", a: "Conservation" },
+            // Extinct
+            { q: "The dodo bird became ___ centuries ago.", a: "Extinct" },
+            { q: "A species that has no living members left is ___.", a: "Extinct" },
+            { q: "If we don't save the rhinos, they will soon be ___.", a: "Extinct" },
+            { q: "Dinosaurs have been ___ for millions of years.", a: "Extinct" },
+            { q: "An ___ species can never be brought back to life.", a: "Extinct" },
+            { q: "Museums display the bones of animals that are now ___.", a: "Extinct" },
+            // Biodiversity
+            { q: "The Amazon rainforest is famous for its rich ___.", a: "Biodiversity" },
+            { q: "The variety of plant and animal life in a habitat is its ___.", a: "Biodiversity" },
+            { q: "The rainforest is known worldwide for its incredible ___, containing millions of species.", a: "Biodiversity" },
+            { q: "Loss of ___ makes ecosystems more vulnerable to diseases.", a: "Biodiversity" },
+            { q: "Protecting ___ means saving different types of plants and animals.", a: "Biodiversity" },
+            { q: "Coral reefs support incredible marine ___.", a: "Biodiversity" },
+            // Ecosystem
+            { q: "A pond is a small ___ where frogs, fish, and insects interact.", a: "Ecosystem" },
+            { q: "A biological community of interacting organisms is an ___.", a: "Ecosystem" },
+            { q: "Every animal plays a crucial role in its ___.", a: "Ecosystem" },
+            { q: "Introducing a new predator can destroy an entire ___.", a: "Ecosystem" },
+            { q: "The desert ___ is fragile and easily damaged by humans.", a: "Ecosystem" },
+            { q: "Pollution in rivers affects the whole aquatic ___.", a: "Ecosystem" },
+            // Deforestation
+            { q: "___ is the main reason orangutans are losing their homes.", a: "Deforestation" },
+            { q: "The action of clearing a wide area of trees is known as ___.", a: "Deforestation" },
+            { q: "Extensive ___ has led to massive soil erosion.", a: "Deforestation" },
+            { q: "We can fight ___ by planting more trees.", a: "Deforestation" },
+            { q: "Illegal logging is a major cause of global ___.", a: "Deforestation" },
+            { q: "___ contributes to global climate change by reducing oxygen production.", a: "Deforestation" },
+            // Species
+            { q: "There are over 3,000 ___ of snakes in the world.", a: "Species" },
+            { q: "A group of living organisms consisting of similar individuals is a ___.", a: "Species" },
+            { q: "A new ___ of frog was discovered in the rainforest.", a: "Species" },
+            { q: "Each ___ has its own unique scientific name.", a: "Species" },
+            { q: "Darwin studied how different ___ evolved over time.", a: "Species" },
+            { q: "Many plant ___ are used to make natural medicines.", a: "Species" },
+            // Preservation
+            { q: "The ___ of natural wetlands is critical for migrating birds.", a: "Preservation" },
+            { q: "Maintaining something in its original or existing state is ___.", a: "Preservation" },
+            { q: "Historical ___ also applies to ancient forests.", a: "Preservation" },
+            { q: "Nature ___ societies work to keep natural areas untouched.", a: "Preservation" },
+            { q: "The ___ of our oceans requires global cooperation.", a: "Preservation" },
+            { q: "Strict laws ensure the ___ of the national park.", a: "Preservation" },
+            // Vulnerable
+            { q: "The polar bear is considered ___ due to melting sea ice.", a: "Vulnerable" },
+            { q: "A species likely to become endangered is classified as ___.", a: "Vulnerable" },
+            { q: "Baby turtles are very ___ when they hatch on the beach.", a: "Vulnerable" },
+            { q: "A species is labeled ___ before it becomes fully endangered.", a: "Vulnerable" },
+            { q: "Small islands are incredibly ___ to rising sea levels.", a: "Vulnerable" },
+            { q: "Without their mother, the cubs are extremely ___ to predators.", a: "Vulnerable" },
+            // Flora
+            { q: "The researchers studied the native ___ of the desert.", a: "Flora" },
+            { q: "The plants of a particular region or habitat are called its ___.", a: "Flora" },
+            { q: "Hawaii has unique ___ that cannot be found anywhere else.", a: "Flora" },
+            { q: "Protecting the local fauna also involves saving the local ___.", a: "Flora" },
+            { q: "The botanical garden has a vast collection of tropical ___.", a: "Flora" },
+            { q: "Changes in climate can drastically alter the region's ___.", a: "Flora" },
+            // Fauna
+            { q: "Australia has unique ___, such as kangaroos and koalas.", a: "Fauna" },
+            { q: "The animals of a particular region or habitat are its ___.", a: "Fauna" },
+            { q: "___ refers to the animal life of a specific region or time period.", a: "Fauna" },
+            { q: "Marine ___ was severely affected by the massive oil spill.", a: "Fauna" },
+            { q: "Studying the island's ___ helps scientists understand evolution.", a: "Fauna" },
+            { q: "The guide pointed out various interesting ___ during our hike.", a: "Fauna" },
+            // Predator
+            { q: "The cheetah is a fast and highly effective ___.", a: "Predator" },
+            { q: "An animal that naturally preys on others for food is a ___.", a: "Predator" },
+            { q: "A ___ is an animal that hunts and eats other animals.", a: "Predator" },
+            { q: "Smaller birds must constantly watch out for an aerial ___.", a: "Predator" },
+            { q: "The shark is the apex ___ of the ocean.", a: "Predator" },
+            { q: "Without any ___, the deer population grew out of control.", a: "Predator" },
+            // Prey
+            { q: "Zebras are the natural ___ of lions.", a: "Prey" },
+            { q: "An animal that is hunted and killed by another for food is ___.", a: "Prey" },
+            { q: "A cheetah can run extremely fast to catch its ___ before it escapes.", a: "Prey" },
+            { q: "Owls hunt for small ___ at night.", a: "Prey" },
+            { q: "The eagle swooped down to catch its ___.", a: "Prey" },
+            { q: "Animals that are ___ often have eyes on the sides of their heads.", a: "Prey" },
+            // Migration
+            { q: "The great wildebeest ___ happens every year in Africa.", a: "Migration" },
+            { q: "The seasonal movement of animals from one region to another is ___.", a: "Migration" },
+            { q: "Every year, millions of wildebeests begin their ___ across the African plains.", a: "Migration" },
+            { q: "Bird ___ is a fascinating natural phenomenon.", a: "Migration" },
+            { q: "Many whales begin their ___ to warmer waters in the winter.", a: "Migration" },
+            { q: "Climate change might disrupt the traditional ___ routes.", a: "Migration" },
+            // Sustainability
+            { q: "Sustainable fishing practices ensure ___ for ocean life.", a: "Sustainability" },
+            { q: "Avoiding the depletion of natural resources is the definition of ___.", a: "Sustainability" },
+            { q: "Environmental ___ is necessary for future generations to thrive.", a: "Sustainability" },
+            { q: "The company won an award for its commitment to ecological ___.", a: "Sustainability" },
+            { q: "Teaching ___ helps children learn to recycle and save water.", a: "Sustainability" },
+            { q: "Forestry ___ means planting a tree for every one that is cut down.", a: "Sustainability" },
+            // Reforestation
+            { q: "The community organized a ___ project to plant 1,000 pines.", a: "Reforestation" },
+            { q: "The process of replanting an area with trees is called ___.", a: "Reforestation" },
+            { q: "___ is a positive action that helps restore destroyed forests by planting new trees.", a: "Reforestation" },
+            { q: "After the severe wildfire, ___ became the main priority.", a: "Reforestation" },
+            { q: "Successful ___ takes many years to see visible results.", a: "Reforestation" },
+            { q: "The government funded ___ programs to combat climate change.", a: "Reforestation" },
+            // Overfishing
+            { q: "___ has drastically reduced the tuna population.", a: "Overfishing" },
+            { q: "Depleting the stock of fish by excessive fishing is known as ___.", a: "Overfishing" },
+            { q: "Many coastal communities are suffering economically because of ___.", a: "Overfishing" },
+            { q: "Banning large nets can help prevent ___ in vulnerable areas.", a: "Overfishing" },
+            { q: "___ destroys marine ecosystems by removing too many fish.", a: "Overfishing" },
+            { q: "Strict quotas have been introduced by the government to stop ___.", a: "Overfishing" },
+            // Exploitation
+            { q: "The ___ of forests for timber harms native wildlife.", a: "Exploitation" },
+            { q: "Making unfair use of resources for benefit is called ___.", a: "Exploitation" },
+            { q: "We must stop the ___ of natural resources before they run out.", a: "Exploitation" },
+            { q: "Animal ___ in the unregulated tourism industry is a growing concern.", a: "Exploitation" },
+            { q: "The documentary exposed the ___ of captive dolphins.", a: "Exploitation" },
+            { q: "Laws were passed to prevent the further ___ of the ocean floor.", a: "Exploitation" },
+            // Smuggling
+            { q: "Customs agents stopped the ___ of rare parrot eggs.", a: "Smuggling" },
+            { q: "The illegal transport of animals across borders is ___.", a: "Smuggling" },
+            { q: "The ___ of exotic pets is a multi-million dollar illegal industry.", a: "Smuggling" },
+            { q: "Dogs are often used at airports to detect wildlife ___.", a: "Smuggling" },
+            { q: "___ wildlife across borders carries heavy prison penalties.", a: "Smuggling" },
+            { q: "The government cracked down on the ___ of elephant ivory.", a: "Smuggling" },
+            // Reserve
+            { q: "The national ___ covers millions of acres of protected land.", a: "Reserve" },
+            { q: "A protected area of land set aside for wildlife is a ___.", a: "Reserve" },
+            { q: "We went on an amazing safari in the famous game ___.", a: "Reserve" },
+            { q: "Animals roam freely within the boundaries of the nature ___.", a: "Reserve" },
+            { q: "Only a limited number of tourists can enter the ecological ___.", a: "Reserve" },
+            { q: "The local indigenous tribe helps manage the wildlife ___.", a: "Reserve" },
+            // Breeding
+            { q: "The zoo started a ___ program to help save the giant panda.", a: "Breeding" },
+            { q: "The mating and production of offspring by animals is ___.", a: "Breeding" },
+            { q: "Spring is the primary ___ season for most migratory birds.", a: "Breeding" },
+            { q: "Captive ___ can help increase the population of endangered species.", a: "Breeding" },
+            { q: "The ___ grounds of the sea turtles must be strictly protected.", a: "Breeding" },
+            { q: "Successful ___ in zoos requires a stress-free and natural environment.", a: "Breeding" },
+            // Extinction
+            { q: "Dinosaurs faced ___ millions of years ago.", a: "Extinction" },
+            { q: "The state of a species dying out completely is ___.", a: "Extinction" },
+            { q: "Habitat loss is the leading cause of ___ in the modern world.", a: "Extinction" },
+            { q: "We are currently facing a mass ___ event due to climate change.", a: "Extinction" },
+            { q: "Conservationists work tirelessly to prevent the ___ of the rhino.", a: "Extinction" },
+            { q: "The threat of ___ looms over many sensitive amphibian species.", a: "Extinction" },
+            // Ecology
+            { q: "Studying ___ helps us understand how climate change affects nature.", a: "Ecology" },
+            { q: "The branch of biology dealing with relations of organisms is ___.", a: "Ecology" },
+            { q: "She has a master's degree in marine ___.", a: "Ecology" },
+            { q: "The ___ of the rainforest is incredibly complex and balanced.", a: "Ecology" },
+            { q: "Urban ___ studies how wild animals adapt to living in modern cities.", a: "Ecology" },
+            { q: "Professor Smith teaches advanced ___ at the local university.", a: "Ecology" },
+            // Wildlife
+            { q: "You must not feed the ___ when visiting the national park.", a: "Wildlife" },
+            { q: "Wild animals collectively and the native fauna are referred to as ___.", a: "Wildlife" },
+            { q: "The documentary captured amazing and rare footage of African ___.", a: "Wildlife" },
+            { q: "Deforestation destroys the natural habitats of local ___.", a: "Wildlife" },
+            { q: "The photographer spent weeks waiting for the perfect ___ shot.", a: "Wildlife" },
+            { q: "Protecting our local ___ ensures a healthy planet for everyone.", a: "Wildlife" },
+            // Threatened
+            { q: "The green sea turtle is a ___ species heavily protected by law.", a: "Threatened" },
+            { q: "A species vulnerable to endangerment in the near future is ___.", a: "Threatened" },
+            { q: "A ___ species is one step away from becoming fully endangered.", a: "Threatened" },
+            { q: "Many coral reefs are currently ___ by rising ocean temperatures.", a: "Threatened" },
+            { q: "The native bird population is ___ by introduced invasive predators.", a: "Threatened" },
+            { q: "Conservation efforts usually focus on protecting ___ habitats.", a: "Threatened" },
+            // Carnivore
+            { q: "The wolf is a ___ that hunts in organized packs.", a: "Carnivore" },
+            { q: "An animal that feeds entirely on meat is a ___.", a: "Carnivore" },
+            { q: "A tiger is a strict ___ and only eats meat.", a: "Carnivore" },
+            { q: "The T-Rex was a massive and fearsome ___.", a: "Carnivore" },
+            { q: "As a ___, the cheetah relies on speed to catch its food.", a: "Carnivore" },
+            { q: "The sharp teeth of a ___ are perfectly designed for tearing meat.", a: "Carnivore" },
+            // Herbivore
+            { q: "The giraffe is a tall ___ that eats leaves from high branches.", a: "Herbivore" },
+            { q: "An animal that feeds entirely on plants is a ___.", a: "Herbivore" },
+            { q: "A domestic cow is a very common example of a ___.", a: "Herbivore" },
+            { q: "Elephants are the largest living ___ on land.", a: "Herbivore" },
+            { q: "A ___ usually has flat teeth for grinding tough plant material.", a: "Herbivore" },
+            { q: "The iguana is primarily a ___, preferring a diet of leaves.", a: "Herbivore" },
+            // Omnivore
+            { q: "Bears are ___ because they eat berries, fish, and insects.", a: "Omnivore" },
+            { q: "An animal that eats both plants and meat is an ___.", a: "Omnivore" },
+            { q: "Humans are naturally ___, consuming both vegetables and meat.", a: "Omnivore" },
+            { q: "The raccoon is an ___ that will eat almost anything it finds.", a: "Omnivore" },
+            { q: "An ___ has a varied diet that includes both plant and animal origin.", a: "Omnivore" },
+            { q: "Pigs are well-known ___ in the farming and agricultural world.", a: "Omnivore" },
+            // Food chain
+            { q: "Plankton are at the very bottom of the marine ___.", a: "Food chain" },
+            { q: "A hierarchical series of organisms dependent on the next for food is a ___.", a: "Food chain" },
+            { q: "Lions are positioned at the very top of the ___ in the savanna.", a: "Food chain" },
+            { q: "If one species disappears, it negatively affects the entire ___.", a: "Food chain" },
+            { q: "The concept of the ___ shows how energy passes between animals.", a: "Food chain" },
+            { q: "Toxins can build up dangerously as they move higher up the ___.", a: "Food chain" },
+            // Adaptation
+            { q: "The camel's hump is a physical ___ for surviving in the desert.", a: "Adaptation" },
+            { q: "A change by which a species becomes better suited to its environment is an ___.", a: "Adaptation" },
+            { q: "The camel's hump is a physical ___ that helps it survive in the hot desert.", a: "Adaptation" },
+            { q: "Thick fur is an important ___ for living in very cold climates.", a: "Adaptation" },
+            { q: "Chameleons use color-changing as a brilliant survival ___.", a: "Adaptation" },
+            { q: "The incredibly long neck of the giraffe is an evolutionary ___.", a: "Adaptation" },
+            // Enclosure
+            { q: "The monkeys swung freely inside their large zoo ___.", a: "Enclosure" },
+            { q: "An area sealed off with an artificial or natural barrier is an ___.", a: "Enclosure" },
+            { q: "The restless tiger paced back and forth in its ___.", a: "Enclosure" },
+            { q: "Zookeepers clean every animal ___ early in the morning.", a: "Enclosure" },
+            { q: "A modern zoo ___ mimics the animal's natural habitat perfectly.", a: "Enclosure" },
+            { q: "The heavy fence of the ___ was reinforced for public safety.", a: "Enclosure" },
+            // Reintroduction
+            { q: "The ___ of wolves into Yellowstone changed the entire ecosystem.", a: "Reintroduction" },
+            { q: "The action of putting a species back into a former habitat is ___.", a: "Reintroduction" },
+            { q: "The conservation program successfully managed the ___ of condors to the wild.", a: "Reintroduction" },
+            { q: "Careful planning is needed for the successful ___ of captive-bred animals.", a: "Reintroduction" },
+            { q: "The ___ of the beaver helped restore the local water wetlands.", a: "Reintroduction" },
+            { q: "Monitoring the animals after their ___ is crucial for their survival.", a: "Reintroduction" },
+            // Marine
+            { q: "Dolphins and whales are intelligent ___ mammals.", a: "Marine" },
+            { q: "Relating to or found in the sea means ___.", a: "Marine" },
+            { q: "Dolphins, whales, and sea turtles are all examples of ___ animals.", a: "Marine" },
+            { q: "The vibrant coral reef is a vital ___ habitat.", a: "Marine" },
+            { q: "Pollution from microscopic plastics is destroying ___ life.", a: "Marine" },
+            { q: "She studies ___ biology at the coastal university in Florida.", a: "Marine" },
+            // Terrestrial
+            { q: "___ animals breathe oxygen directly from the air.", a: "Terrestrial" },
+            { q: "Living on or relating to the land means ___.", a: "Terrestrial" },
+            { q: "Elephants are the largest ___ mammals on Earth.", a: "Terrestrial" },
+            { q: "A sea turtle is marine, but a desert tortoise is strictly ___.", a: "Terrestrial" },
+            { q: "___ ecosystems include dense forests, dry deserts, and grasslands.", a: "Terrestrial" },
+            { q: "The rattlesnake is a dangerous ___ predator found in the desert.", a: "Terrestrial" },
+            // Tracker
+            { q: "The expert ___ easily found the leopard's footprints in the mud.", a: "Tracker" },
+            { q: "A person who follows the trail of wild animals is a ___.", a: "Tracker" },
+            { q: "A skilled ___ can follow an animal quietly for miles.", a: "Tracker" },
+            { q: "The local ___ helped the research team find the gorilla family.", a: "Tracker" },
+            { q: "He works as a professional wildlife ___ for the national park.", a: "Tracker" },
+            { q: "The ___ noticed a broken branch that indicated the bear's path.", a: "Tracker" },
+            // Ranger
+            { q: "The park ___ gave us a tour and explained the rules of the reserve.", a: "Ranger" },
+            { q: "A keeper of a park, forest, or area of countryside is a ___.", a: "Ranger" },
+            { q: "The national park ___ gave our school group a tour.", a: "Ranger" },
+            { q: "A forest ___ protects the area from illegal logging and fires.", a: "Ranger" },
+            { q: "The brave ___ rescued the trapped animal from the deep ditch.", a: "Ranger" },
+            { q: "It is a park ___'s duty to educate visitors about local wildlife.", a: "Ranger" }
+        ];
+
+        const feedbackSuccess = ["Wow!", "Excellent!", "You are a genius!", "Good job!", "Wonderful!", "Amazing!", "Spectacular!", "Outstanding!", "Brilliant!"];
+        const feedbackFail = ["What a pity!", "Wrong!", "Try again!", "Oops!", "Not quite!", "Oh no!", "Keep trying!", "Time's up!"];
+
+        // --- FUNCIONES CENTRALES Y LÓGICA DE JUEGO ---
+        function shuffleArray(array) { return array.sort(() => Math.random() - 0.5); }
+
+        function speak(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.9;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        window.playCurrentAudio = function() {
+            if (!currentQ) return;
+            const textToRead = currentQ.questionText.replace("___", "blank");
+            speak(textToRead);
+        }
+
+        window.switchScreen = function(screenId) {
+            ['welcome-screen', 'countdown-screen', 'playing-screen', 'gameover-screen', 'leaderboard-screen'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+            document.getElementById(screenId).classList.remove('hidden');
+
+            if(screenId === 'playing-screen'){
+                document.getElementById('bg-decorations').classList.remove('hidden');
+                stopLeaderboardPolling();
+            } else if (screenId === 'welcome-screen' || screenId === 'leaderboard-screen') {
+                document.getElementById('bg-decorations').classList.add('hidden');
+                startLeaderboardPolling();
+            }
+        }
+
+        function requestFullScreen() {
+            const docElm = document.documentElement;
+            if (docElm.requestFullscreen) docElm.requestFullscreen().catch(err => console.log("Fullscreen error:", err));
+        }
+
+        function exitFullScreen() {
+            if (document.fullscreenElement) document.exitFullscreen().catch(err => console.log("Exit fullscreen error:", err));
+        }
+
+        // --- GAME LOGIC ---
+        function generateRandomQuestion() {
+            const qObj = QUESTION_BANK[Math.floor(Math.random() * QUESTION_BANK.length)];
+            const questionText = qObj.q;
+            const answer = qObj.a;
+            const hint = HINTS[answer] || "Think about nature and wildlife!";
+
+            // Generar distractores aleatorios
+            let availableWords = VOCAB_WORDS.filter(w => w !== answer);
+            availableWords = shuffleArray(availableWords);
+            const distractors = availableWords.slice(0, 3);
+
+            const options = shuffleArray([answer, ...distractors]);
+            return { questionText, answer, options, hint };
+        }
+
+        window.startGame = function() {
+            playerName = document.getElementById('player-name').value.trim();
+            if (!playerName) {
+                document.getElementById('name-error').classList.remove('hidden');
+                return;
+            }
+            document.getElementById('name-error').classList.add('hidden');
+
+            if ('speechSynthesis' in window) {
+                const silent = new SpeechSynthesisUtterance('');
+                silent.volume = 0;
+                window.speechSynthesis.speak(silent);
+            }
+            
+            requestFullScreen();
+
+            score = 0;
+            lives = 5;
+            level = 1;
+            totalTimeAlive = 0;
+            updateUI();
+
+            window.switchScreen('countdown-screen');
+            let countdown = 3;
+            const textEl = document.getElementById('countdown-text');
+            textEl.innerText = countdown;
+            speak(countdown.toString());
+
+            const interval = setInterval(() => {
+                countdown--;
+                if (countdown > 0) {
+                    textEl.innerText = countdown;
+                    speak(countdown.toString());
+                } else if (countdown === 0) {
+                    textEl.innerText = "GO!";
+                    speak("Go!");
+                } else {
+                    clearInterval(interval);
+                    window.switchScreen('playing-screen');
+                    loadNewQuestion();
+                }
+            }, 1000);
+        }
+
+        window.stopGame = function() {
+            clearInterval(timerInterval);
+            exitFullScreen();
+            window.switchScreen('welcome-screen');
+            window.speechSynthesis.cancel();
+        }
+
+        function renderHearts() {
+            const container = document.getElementById('hearts-container');
+            container.innerHTML = '';
+            for(let i = 0; i < 5; i++) {
+                const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                svg.setAttribute('width', '28');
+                svg.setAttribute('height', '28');
+                svg.setAttribute('viewBox', '0 0 24 24');
+                svg.setAttribute('stroke', 'currentColor');
+                svg.setAttribute('stroke-width', '2');
+                svg.setAttribute('stroke-linecap', 'round');
+                svg.setAttribute('stroke-linejoin', 'round');
+                
+                if (i < lives) svg.setAttribute('class', 'heart-active');
+                else svg.setAttribute('class', 'heart-inactive');
+
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                path.setAttribute('d', 'M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z');
+                svg.appendChild(path);
+                container.appendChild(svg);
+            }
+        }
+
+        function updateUI() {
+            level = Math.floor(score / 10) + 1;
+            document.getElementById('level-display').innerText = `Level ${level}`;
+            document.getElementById('score-display').innerText = score;
+            renderHearts();
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            questionTimeLimit = Math.max(5, 15 - (level - 1) * 1.5); 
+            currentTimer = questionTimeLimit;
+            questionStartTime = Date.now();
+            
+            const timerBar = document.getElementById('timer-bar');
+            timerBar.style.width = '100%';
+            timerBar.className = 'bg-gradient-to-r from-green-400 to-emerald-500 h-2 transition-all duration-100 ease-linear';
+
+            timerInterval = setInterval(() => {
+                if (isProcessing) return;
+                
+                const elapsed = (Date.now() - questionStartTime) / 1000;
+                currentTimer = questionTimeLimit - elapsed;
+                
+                if (currentTimer <= 0) {
+                    currentTimer = 0;
+                    clearInterval(timerInterval);
+                    timerBar.style.width = '0%';
+                    handleTimeout();
+                } else {
+                    const percentage = (currentTimer / questionTimeLimit) * 100;
+                    timerBar.style.width = percentage + '%';
+                    
+                    if (percentage < 30) {
+                        timerBar.className = 'bg-gradient-to-r from-red-500 to-pink-600 h-2 transition-all duration-100 ease-linear';
+                    } else if (percentage < 60) {
+                        timerBar.className = 'bg-gradient-to-r from-amber-400 to-orange-500 h-2 transition-all duration-100 ease-linear';
+                    }
+                }
+            }, 50);
+        }
+
+        function stopAndRecordTime() {
+            clearInterval(timerInterval);
+            const elapsed = (Date.now() - questionStartTime) / 1000;
+            totalTimeAlive += Math.min(elapsed, questionTimeLimit);
+        }
+
+        function loadNewQuestion() {
+            currentQ = generateRandomQuestion();
+            isProcessing = false;
+            
+            const parts = currentQ.questionText.split('___');
+            const qContainer = document.getElementById('question-text');
+            qContainer.innerHTML = '';
+            
+            parts.forEach((part, index) => {
+                qContainer.appendChild(document.createTextNode(part));
+                if (index < parts.length - 1) {
+                    const span = document.createElement('span');
+                    span.className = 'inline-block mx-2 w-32 md:w-48 border-b-4 border-indigo-400 align-baseline';
+                    qContainer.appendChild(span);
+                }
+            });
+
+            const optContainer = document.getElementById('options-container');
+            optContainer.innerHTML = '';
+            currentQ.options.forEach(option => {
+                const btn = document.createElement('button');
+                // Estilo ajustado para coincidir con tu diseño original (colores índigo/neutros)
+                btn.className = 'w-full py-5 px-6 rounded-2xl text-xl md:text-2xl font-semibold transition-all duration-200 shadow-sm border-2 bg-white border-slate-200 text-slate-700 hover:border-indigo-400 hover:shadow-md hover:text-indigo-600 hover:scale-[1.02] active:scale-[0.98] cursor-pointer';
+                btn.innerText = option;
+                btn.onclick = () => window.handleAnswer(option, btn);
+                optContainer.appendChild(btn);
+            });
+
+            document.getElementById('show-hint-btn').classList.remove('hidden');
+            document.getElementById('hint-content').classList.add('hidden');
+            document.getElementById('hint-text').innerText = currentQ.hint;
+            document.getElementById('question-card').classList.remove('hidden');
+
+            startTimer();
+
+            setTimeout(() => { window.playCurrentAudio(); }, 500);
+        }
+
+        window.showHint = function() {
+            document.getElementById('show-hint-btn').classList.add('hidden');
+            document.getElementById('hint-content').classList.remove('hidden');
+        }
+
+        window.handleAnswer = function(selectedOption, buttonElement) {
+            if (isProcessing) return;
+            isProcessing = true;
+            stopAndRecordTime();
+
+            const isCorrect = selectedOption === currentQ.answer;
+
+            // Visual feedback
+            const buttons = document.getElementById('options-container').querySelectorAll('button');
+            buttons.forEach(b => {
+                b.classList.remove('hover:scale-[1.02]', 'active:scale-[0.98]', 'cursor-pointer', 'hover:border-indigo-400', 'hover:text-indigo-600', 'bg-white', 'text-slate-700', 'border-slate-200');
+                b.classList.add('cursor-not-allowed');
+
+                if (b.innerText === currentQ.answer) {
+                    // Respuesta correcta en color Índigo para respetar tu estilo
+                    b.classList.add('bg-indigo-500', 'text-white', 'border-indigo-600', 'shadow-xl', 'scale-[1.02]');
+                } else if (b.innerText === selectedOption && !isCorrect) {
+                    // Respuesta equivocada en rojo
+                    b.classList.add('bg-red-500', 'text-white', 'border-red-600');
+                } else {
+                    b.classList.add('bg-slate-100', 'text-slate-400', 'border-slate-200', 'opacity-80');
+                }
+            });
+
+            const overlay = document.getElementById('feedback-overlay');
+            const feedbackText = document.getElementById('feedback-text');
+
+            if (isCorrect) {
+                const msg = feedbackSuccess[Math.floor(Math.random() * feedbackSuccess.length)];
+                feedbackText.innerText = msg;
+                feedbackText.className = "text-4xl md:text-6xl font-black drop-shadow-2xl animate-bounce-custom text-center text-white bg-indigo-500 px-8 py-4 rounded-full border-4 border-white shadow-2xl inline-block";
+                overlay.classList.remove('hidden');
+                speak(msg);
+                
+                score++;
+                updateUI();
+                
+                setTimeout(() => {
+                    overlay.classList.add('hidden');
+                    document.getElementById('question-card').classList.add('hidden');
+                    loadNewQuestion();
+                }, 3000);
+
+            } else {
+                const msg = feedbackFail[Math.floor(Math.random() * (feedbackFail.length - 1))]; 
+                feedbackText.innerText = msg;
+                feedbackText.className = "text-4xl md:text-6xl font-black drop-shadow-2xl animate-bounce-custom text-center text-white bg-red-500 px-8 py-4 rounded-full border-4 border-white shadow-2xl inline-block";
+                overlay.classList.remove('hidden');
+                speak(msg);
+                
+                lives--;
+                updateUI();
+                
+                setTimeout(() => {
+                    overlay.classList.add('hidden');
+                    if (lives <= 0) gameOver();
+                    else {
+                        document.getElementById('question-card').classList.add('hidden');
+                        loadNewQuestion();
+                    }
+                }, 3000);
+            }
+        }
+
+        function handleTimeout() {
+            if (isProcessing) return;
+            isProcessing = true;
+            stopAndRecordTime();
+            
+            const buttons = document.getElementById('options-container').querySelectorAll('button');
+            buttons.forEach(b => {
+                b.classList.remove('hover:scale-[1.02]', 'active:scale-[0.98]', 'cursor-pointer', 'hover:border-indigo-400', 'hover:text-indigo-600', 'bg-white', 'text-slate-700', 'border-slate-200');
+                b.classList.add('cursor-not-allowed');
+
+                if (b.innerText === currentQ.answer) {
+                    b.classList.add('bg-indigo-500', 'text-white', 'border-indigo-600', 'shadow-xl', 'scale-[1.02]');
+                } else {
+                    b.classList.add('bg-slate-100', 'text-slate-400', 'border-slate-200', 'opacity-80');
+                }
+            });
+
+            const msg = "Time's up!";
+            const overlay = document.getElementById('feedback-overlay');
+            const feedbackText = document.getElementById('feedback-text');
+            
+            feedbackText.innerText = msg;
+            feedbackText.className = "text-4xl md:text-6xl font-black drop-shadow-2xl animate-bounce-custom text-center text-white bg-red-500 px-8 py-4 rounded-full border-4 border-white shadow-2xl inline-block";
+            overlay.classList.remove('hidden');
+            speak(msg);
+            
+            lives--;
+            updateUI();
+            
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+                if (lives <= 0) gameOver();
+                else {
+                    document.getElementById('question-card').classList.add('hidden');
+                    loadNewQuestion();
+                }
+            }, 3000);
+        }
+
+        async function gameOver() {
+            document.getElementById('final-score').innerText = score;
+            document.getElementById('final-level').innerText = level;
+            document.getElementById('final-time').innerText = totalTimeAlive.toFixed(1);
+            
+            window.switchScreen('gameover-screen');
+            speak("Game Over. You did your best!");
+
+            const newRecord = {
+                name: playerName || "Unknown",
+                score: Number(score),
+                timeAlive: Number(parseFloat(totalTimeAlive).toFixed(1)),
+                ip: userIP 
+            };
+
+            if (GOOGLE_SHEETS_URL.trim() !== "") {
+                try {
+                    await fetch(GOOGLE_SHEETS_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'text/plain;charset=utf-8', 
+                        },
+                        body: JSON.stringify(newRecord)
+                    });
+                    console.log("Guardado en Google Sheets correctamente.");
+                    fetchLeaderboardData();
+                } catch (e) {
+                    console.error("No se pudo guardar en Google Sheets.", e);
+                    fallbackLocalSave(newRecord);
+                }
+            } else {
+                fallbackLocalSave(newRecord);
+            }
+        }
+
+        function fallbackLocalSave(newRecord) {
+            leaderboardData.push(newRecord);
+            leaderboardData.sort((a, b) => {
+                if (b.score !== a.score) return b.score - a.score;
+                return a.timeAlive - b.timeAlive; 
+            });
+            updateLeaderboardUI();
+        }
+
+        // --- GOOGLE SHEETS FETCHING LOGIC ---
+        async function fetchLeaderboardData() {
+            if (GOOGLE_SHEETS_URL.trim() === "") {
+                updateLeaderboardUI();
+                return;
+            }
+
+            try {
+                const response = await fetch(GOOGLE_SHEETS_URL);
+                const data = await response.json();
+                leaderboardData = data;
+                document.getElementById('offline-badge').classList.add('hidden');
+                updateLeaderboardUI();
+            } catch (e) {
+                console.error("Error obteniendo datos de Google Sheets:", e);
+                document.getElementById('offline-badge').classList.remove('hidden');
+                document.getElementById('offline-text').innerText = "Sin conexión a Google Sheets.";
+                updateLeaderboardUI(); 
+            }
+        }
+
+        function startLeaderboardPolling() {
+            if(leaderboardPollingInterval) clearInterval(leaderboardPollingInterval);
+            fetchLeaderboardData(); 
+            leaderboardPollingInterval = setInterval(fetchLeaderboardData, 10000); 
+        }
+
+        function stopLeaderboardPolling() {
+            if(leaderboardPollingInterval) clearInterval(leaderboardPollingInterval);
+        }
+
+        function updateLeaderboardUI() {
+            const miniList = document.getElementById('mini-leaderboard-list');
+            if (miniList) {
+                const top5 = leaderboardData.slice(0, 5);
+                miniList.innerHTML = '';
+                if (top5.length === 0) {
+                    miniList.innerHTML = '<p class="text-gray-400 text-center mt-4">No records yet! Be the first!</p>';
+                } else {
+                    top5.forEach((row, index) => {
+                        const div = document.createElement('div');
+                        div.className = 'flex justify-between items-center bg-white/5 px-4 py-3 rounded-xl border border-white/5';
+                        const isTop1 = index === 0 ? 'text-yellow-400 font-bold' : 'text-gray-200';
+                        
+                        div.innerHTML = `
+                            <div class="flex items-center space-x-3 truncate">
+                                <span class="${isTop1} text-lg">#${index + 1}</span>
+                                <span class="font-medium truncate max-w-[120px] text-left text-base">${row.name}</span>
+                            </div>
+                            <div class="flex flex-col items-end">
+                                <span class="text-indigo-300 font-bold text-sm">${row.score} pts</span>
+                                <span class="text-gray-400 text-xs">${row.timeAlive}s</span>
+                            </div>
+                        `;
+                        miniList.appendChild(div);
+                    });
+                }
+            }
+
+            const listEl = document.getElementById('leaderboard-list');
+            if (listEl) {
+                const top50 = leaderboardData.slice(0, 50); 
+                listEl.innerHTML = '';
+                if (top50.length === 0) {
+                    listEl.innerHTML = '<tr><td colspan="4" class="text-center p-4 text-gray-400">No records yet!</td></tr>';
+                } else {
+                    top50.forEach((row, index) => {
+                        const tr = document.createElement('tr');
+                        tr.className = 'border-b border-white/5 hover:bg-white/5 transition-colors';
+                        const isTop1 = index === 0 ? 'text-yellow-400 font-black text-2xl drop-shadow-md' : '';
+                        const isTop2 = index === 1 ? 'text-gray-300 font-bold text-xl' : '';
+                        const isTop3 = index === 2 ? 'text-amber-600 font-bold text-xl' : '';
+
+                        tr.innerHTML = `
+                            <td class="p-4 ${isTop1 || isTop2 || isTop3}">#${index + 1}</td>
+                            <td class="p-4 font-bold truncate max-w-[120px] md:max-w-[200px]">${row.name}</td>
+                            <td class="p-4 text-center font-black text-indigo-300">${row.score}</td>
+                            <td class="p-4 text-right text-gray-400">${row.timeAlive}s</td>
+                        `;
+                        listEl.appendChild(tr);
+                    });
+                }
+            }
+        }
+
+        window.showLeaderboard = function(returnScreen = 'welcome-screen') {
+            document.getElementById('lb-back-btn').onclick = () => window.switchScreen(returnScreen);
+            window.switchScreen('leaderboard-screen');
+        }
+
+        renderHearts();
+        startLeaderboardPolling();
+    </script>
+</body>
+</html>
