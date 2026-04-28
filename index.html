@@ -55,6 +55,22 @@
             -ms-user-select: none;
             user-select: none;
         }
+
+        /* Estilo para la barra de desplazamiento del autocompletado */
+        #autocomplete-list::-webkit-scrollbar {
+            width: 8px;
+        }
+        #autocomplete-list::-webkit-scrollbar-track {
+            background: #f1f5f9; 
+            border-radius: 10px;
+        }
+        #autocomplete-list::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 10px;
+        }
+        #autocomplete-list::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
     </style>
 </head>
 <body class="no-select text-slate-800">
@@ -91,9 +107,15 @@
                     Master Wildlife and Conservation Vocabulary. Over 200+ unique exercises!
                 </p>
 
-                <div class="max-w-sm mx-auto w-full mt-4 mb-4 relative">
-                    <input type="text" id="player-name" placeholder="Enter your name to start..." class="w-full px-6 py-4 rounded-full text-slate-800 font-bold text-xl text-center focus:outline-none focus:ring-4 focus:ring-pink-500 shadow-inner" maxlength="20">
-                    <p id="name-error" class="hidden text-red-300 font-semibold mt-2 drop-shadow-md">Please enter your name!</p>
+                <div class="max-w-sm mx-auto w-full mt-4 mb-4 relative text-left">
+                    <input type="text" id="player-name" autocomplete="off" placeholder="Enter your name to start..." class="w-full px-6 py-4 rounded-full text-slate-800 font-bold text-xl text-center focus:outline-none focus:ring-4 focus:ring-pink-500 shadow-inner" maxlength="50">
+                    
+                    <!-- MENU DESPLEGABLE DE AUTOCOMPLETADO (Oculto por defecto) -->
+                    <ul id="autocomplete-list" class="hidden absolute top-[110%] left-0 right-0 bg-white rounded-2xl shadow-2xl border border-slate-200 max-h-48 overflow-y-auto z-50 text-base font-semibold">
+                        <!-- Las opciones se inyectarán aquí con JavaScript -->
+                    </ul>
+
+                    <p id="name-error" class="hidden text-red-300 font-semibold mt-2 drop-shadow-md text-center">Please enter your name!</p>
                 </div>
 
                 <div class="flex flex-col items-center space-y-4">
@@ -271,7 +293,7 @@
     <!-- JAVASCRIPT LOGIC -->
     <script>
         // URL DE GOOGLE APPS SCRIPT
-        const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbzn0HOd8z1h7llmG8Z6aRJvFpb1EbppwBqeSzCnJx8tKl6A03cxdXRqJEgGDS0qLNCxKQ/exec"; 
+        const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbwXXSympXQ2PkAL8Qnfht2tZbGlhqbWD_Zxc8EqO2Je1CV0md8Ogb3paa4s577LwIREEA/exec"; 
 
         // --- GLOBAL VARIABLES ---
         let playerName = "";
@@ -290,6 +312,8 @@
         let leaderboardData = []; 
         let leaderboardPollingInterval = null;
         let userIP = "unknown"; 
+        
+        let availableStudentNames = []; // Almacena la lista de estudiantes
 
         // Obtener IP del usuario al cargar la página
         async function fetchUserIP() {
@@ -314,7 +338,85 @@
             window.speechSynthesis.getVoices();
         }
 
-        // --- NUEVO VOCABULARIO (40 palabras del PDF Wildlife) ---
+        // --- LÓGICA DE AUTOCOMPLETADO DE NOMBRES ---
+        async function fetchStudentNames() {
+            try {
+                // Solicita al Apps Script usando el parámetro action=getNames
+                const response = await fetch(GOOGLE_SHEETS_URL + "?action=getNames");
+                const data = await response.json();
+                
+                if (Array.isArray(data) && data.length > 0) {
+                    availableStudentNames = data;
+                } else {
+                    throw new Error("Formato no válido o vacío");
+                }
+            } catch (e) {
+                console.warn("No se pudo cargar la hoja 'List'. Usando lista de prueba temporal.");
+                // Lista de ejemplo temporal en caso de que el Apps Script no devuelva la data aún
+                availableStudentNames = [
+                    "Hugo Luque", "Maria Fernandez", "Juan Perez", "Carlos Ruiz", 
+                    "Ana Gomez", "Luis Torres", "Sofia Morales", "Jorge Ramirez"
+                ];
+            }
+        }
+        fetchStudentNames();
+
+        const playerNameInput = document.getElementById('player-name');
+        const autocompleteList = document.getElementById('autocomplete-list');
+
+        playerNameInput.addEventListener('input', function() {
+            const val = this.value;
+            autocompleteList.innerHTML = ''; // Limpiar lista
+            
+            if (!val) {
+                autocompleteList.classList.add('hidden');
+                return;
+            }
+
+            // Filtrar coincidencias
+            const matches = availableStudentNames.filter(name => name.toLowerCase().includes(val.toLowerCase()));
+
+            if (matches.length > 0) {
+                autocompleteList.classList.remove('hidden');
+                matches.forEach(match => {
+                    const li = document.createElement('li');
+                    li.className = "px-6 py-4 hover:bg-pink-50 cursor-pointer text-slate-700 border-b border-slate-100 last:border-none transition-colors";
+                    
+                    // Resaltar la parte del texto que coincide con el input
+                    const regex = new RegExp(`(${val})`, "gi");
+                    li.innerHTML = match.replace(regex, "<span class='text-pink-600 font-black'>$1</span>");
+                    
+                    // Al hacer clic, se asigna el valor y se cierra la lista
+                    li.addEventListener('click', function(e) {
+                        e.stopPropagation(); // Evitar que el clic se propague y cierre antes de tiempo
+                        playerNameInput.value = match;
+                        autocompleteList.classList.add('hidden');
+                        document.getElementById('name-error').classList.add('hidden');
+                    });
+                    
+                    autocompleteList.appendChild(li);
+                });
+            } else {
+                autocompleteList.classList.add('hidden');
+            }
+        });
+
+        // Ocultar la lista si el usuario hace clic en otro lado de la pantalla
+        document.addEventListener('click', function(e) {
+            if (e.target !== playerNameInput && e.target !== autocompleteList) {
+                autocompleteList.classList.add('hidden');
+            }
+        });
+
+        // Al enfocar el input, mostrar sugerencias si ya hay texto
+        playerNameInput.addEventListener('focus', function() {
+            if (this.value && autocompleteList.childNodes.length > 0) {
+                autocompleteList.classList.remove('hidden');
+            }
+        });
+
+
+        // --- VOCABULARIO ---
         const VOCAB_WORDS = [
             "Endangered", "Sanctuary", "Habitat", "Poacher", "Captive", "Conservation", 
             "Extinct", "Biodiversity", "Ecosystem", "Deforestation", "Species", 
@@ -369,7 +471,6 @@
             "Ranger": "A keeper of a park, forest, or area of countryside."
         };
 
-        // --- 240 EJERCICIOS (6 por palabra, total > 200) ---
         const QUESTION_BANK = [
             // Endangered
             { q: "The Bengal tiger is an ___ species due to habitat loss.", a: "Endangered" },
@@ -857,7 +958,6 @@
             optContainer.innerHTML = '';
             currentQ.options.forEach(option => {
                 const btn = document.createElement('button');
-                // Estilo ajustado para coincidir con tu diseño original (colores índigo/neutros)
                 btn.className = 'w-full py-5 px-6 rounded-2xl text-xl md:text-2xl font-semibold transition-all duration-200 shadow-sm border-2 bg-white border-slate-200 text-slate-700 hover:border-indigo-400 hover:shadow-md hover:text-indigo-600 hover:scale-[1.02] active:scale-[0.98] cursor-pointer';
                 btn.innerText = option;
                 btn.onclick = () => window.handleAnswer(option, btn);
@@ -893,10 +993,8 @@
                 b.classList.add('cursor-not-allowed');
 
                 if (b.innerText === currentQ.answer) {
-                    // Respuesta correcta en color Índigo para respetar tu estilo
                     b.classList.add('bg-indigo-500', 'text-white', 'border-indigo-600', 'shadow-xl', 'scale-[1.02]');
                 } else if (b.innerText === selectedOption && !isCorrect) {
-                    // Respuesta equivocada en rojo
                     b.classList.add('bg-red-500', 'text-white', 'border-red-600');
                 } else {
                     b.classList.add('bg-slate-100', 'text-slate-400', 'border-slate-200', 'opacity-80');
@@ -1036,7 +1134,12 @@
             try {
                 const response = await fetch(GOOGLE_SHEETS_URL);
                 const data = await response.json();
-                leaderboardData = data;
+                
+                // Si la data es un arreglo de objetos (leaderboard)
+                if (Array.isArray(data) && (data.length === 0 || data[0].hasOwnProperty('score'))) {
+                    leaderboardData = data;
+                }
+                
                 document.getElementById('offline-badge').classList.add('hidden');
                 updateLeaderboardUI();
             } catch (e) {
