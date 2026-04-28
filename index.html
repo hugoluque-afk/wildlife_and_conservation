@@ -293,7 +293,7 @@
     <!-- JAVASCRIPT LOGIC -->
     <script>
         // URL DE GOOGLE APPS SCRIPT
-        const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbzN_AQMASXwoTy9_abMl9gUTWl52y3HaoXYAkkjL5lKhkcLVHe46ZwrhDE162fXxuCp/exec"; 
+        const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbzjLeOtqzeX6DsOFIZ2JYyMklYtddEnOP-d965Tn5AZxILfRwTAskSia8A4BsXLmIHm3g/exec"; 
 
         // --- GLOBAL VARIABLES ---
         let playerName = "";
@@ -1147,17 +1147,30 @@
                 }
 
                 if (parsedData.length > 0) {
-                    // Si los datos son listas directas (filas de excel) por ej: [["Fecha", "Nombre", "Puntaje", ...], ...]
+                    // Si los datos son listas directas (filas de excel)
                     if (Array.isArray(parsedData[0])) {
-                        // Saltar el primer elemento si detecta que es un encabezado en formato texto
-                        let startIndex = (typeof parsedData[0][0] === 'string' && isNaN(Number(parsedData[0][2]))) ? 1 : 0;
+                        let nameIdx = 0, scoreIdx = 1, timeIdx = 2; // Valores por defecto según tu imagen
+                        
+                        // Detectar encabezado automáticamente
+                        if (typeof parsedData[0][0] === 'string' && isNaN(Number(parsedData[0][1]))) {
+                            const header = parsedData[0].map(h => String(h).toLowerCase().trim());
+                            const n = header.indexOf('name'); if(n !== -1) nameIdx = n;
+                            const s = header.indexOf('score'); if(s !== -1) scoreIdx = s;
+                            const t = header.findIndex(h => h.includes('time')); if(t !== -1) timeIdx = t;
+                            
+                            parsedData.shift(); // Quitar encabezado de la data
+                        }
+                        
                         let formatted = [];
-                        for (let i = startIndex; i < parsedData.length; i++) {
-                            formatted.push({
-                                name: parsedData[i][1] || "Unknown",
-                                score: Number(parsedData[i][2]) || 0,
-                                timeAlive: Number(parsedData[i][3]) || 0
-                            });
+                        for (let i = 0; i < parsedData.length; i++) {
+                            // Ignorar filas vacías
+                            if(parsedData[i][nameIdx] && parsedData[i][nameIdx].toString().trim() !== "") {
+                                formatted.push({
+                                    name: parsedData[i][nameIdx] || "Unknown",
+                                    score: Number(parsedData[i][scoreIdx]) || 0,
+                                    timeAlive: Number(parsedData[i][timeIdx]) || 0
+                                });
+                            }
                         }
                         leaderboardData = formatted;
                     } else {
@@ -1165,10 +1178,13 @@
                         leaderboardData = parsedData.map(item => ({
                             name: item.name || item.Name || item.NAME || "Unknown",
                             score: Number(item.score || item.Score || item.SCORE) || 0,
-                            timeAlive: Number(item.timeAlive || item.timealive || item.TimeAlive || item['Time Alive']) || 0
+                            timeAlive: Number(item.timeAlive || item.timealive || item.TimeAlive || item['Time Alive'] || item.time || item.Time || item.TIME) || 0
                         }));
                     }
                     
+                    // Limpiar registros nulos
+                    leaderboardData = leaderboardData.filter(r => r.name !== "Unknown" && (r.score > 0 || r.timeAlive > 0));
+
                     // Ordenamos de nuevo para asegurar que se muestre correctamente el top
                     leaderboardData.sort((a, b) => {
                         if (b.score !== a.score) return b.score - a.score;
