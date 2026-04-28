@@ -293,7 +293,7 @@
     <!-- JAVASCRIPT LOGIC -->
     <script>
         // URL DE GOOGLE APPS SCRIPT
-        const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbwXXSympXQ2PkAL8Qnfht2tZbGlhqbWD_Zxc8EqO2Je1CV0md8Ogb3paa4s577LwIREEA/exec"; 
+        const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbzN_AQMASXwoTy9_abMl9gUTWl52y3HaoXYAkkjL5lKhkcLVHe46ZwrhDE162fXxuCp/exec"; 
 
         // --- GLOBAL VARIABLES ---
         let playerName = "";
@@ -1133,11 +1133,49 @@
 
             try {
                 const response = await fetch(GOOGLE_SHEETS_URL);
-                const data = await response.json();
+                const rawData = await response.json();
                 
-                // Si la data es un arreglo de objetos (leaderboard)
-                if (Array.isArray(data) && (data.length === 0 || data[0].hasOwnProperty('score'))) {
-                    leaderboardData = data;
+                let parsedData = [];
+                
+                // Intenta detectar distintas estructuras (array directo, objeto {data: [...]}, o {records: [...]})
+                if (Array.isArray(rawData)) {
+                    parsedData = rawData;
+                } else if (rawData && rawData.data && Array.isArray(rawData.data)) {
+                    parsedData = rawData.data;
+                } else if (rawData && rawData.records && Array.isArray(rawData.records)) {
+                    parsedData = rawData.records;
+                }
+
+                if (parsedData.length > 0) {
+                    // Si los datos son listas directas (filas de excel) por ej: [["Fecha", "Nombre", "Puntaje", ...], ...]
+                    if (Array.isArray(parsedData[0])) {
+                        // Saltar el primer elemento si detecta que es un encabezado en formato texto
+                        let startIndex = (typeof parsedData[0][0] === 'string' && isNaN(Number(parsedData[0][2]))) ? 1 : 0;
+                        let formatted = [];
+                        for (let i = startIndex; i < parsedData.length; i++) {
+                            formatted.push({
+                                name: parsedData[i][1] || "Unknown",
+                                score: Number(parsedData[i][2]) || 0,
+                                timeAlive: Number(parsedData[i][3]) || 0
+                            });
+                        }
+                        leaderboardData = formatted;
+                    } else {
+                        // Si ya es un arreglo de objetos (soporta variables en mayúscula o minúscula)
+                        leaderboardData = parsedData.map(item => ({
+                            name: item.name || item.Name || item.NAME || "Unknown",
+                            score: Number(item.score || item.Score || item.SCORE) || 0,
+                            timeAlive: Number(item.timeAlive || item.timealive || item.TimeAlive || item['Time Alive']) || 0
+                        }));
+                    }
+                    
+                    // Ordenamos de nuevo para asegurar que se muestre correctamente el top
+                    leaderboardData.sort((a, b) => {
+                        if (b.score !== a.score) return b.score - a.score;
+                        return a.timeAlive - b.timeAlive;
+                    });
+                } else {
+                    leaderboardData = [];
                 }
                 
                 document.getElementById('offline-badge').classList.add('hidden');
