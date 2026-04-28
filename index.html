@@ -115,7 +115,7 @@
                         <!-- Las opciones se inyectarán aquí con JavaScript -->
                     </ul>
 
-                    <p id="name-error" class="hidden text-red-300 font-semibold mt-2 drop-shadow-md text-center">Please enter your name!</p>
+                    <p id="name-error" class="hidden text-red-300 font-semibold mt-2 drop-shadow-md text-center">Please select a valid name from the list!</p>
                 </div>
 
                 <div class="flex flex-col items-center space-y-4">
@@ -292,6 +292,11 @@
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
+        // DESHABILITAR CLIC DERECHO
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
         // URL DE GOOGLE APPS SCRIPT
         const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbzjLeOtqzeX6DsOFIZ2JYyMklYtddEnOP-d965Tn5AZxILfRwTAskSia8A4BsXLmIHm3g/exec"; 
 
@@ -818,10 +823,16 @@
 
         window.startGame = function() {
             playerName = document.getElementById('player-name').value.trim();
-            if (!playerName) {
+            
+            // VALIDACIÓN ESTRICTA DE LA LISTA: Verifica si el nombre ingresado existe en el array (ignorando mayúsculas/minúsculas)
+            const isNameValid = availableStudentNames.some(name => name.toLowerCase() === playerName.toLowerCase());
+
+            if (!playerName || !isNameValid) {
+                document.getElementById('name-error').innerText = "Please select a valid name from the list!";
                 document.getElementById('name-error').classList.remove('hidden');
                 return;
             }
+            
             document.getElementById('name-error').classList.add('hidden');
 
             if ('speechSynthesis' in window) {
