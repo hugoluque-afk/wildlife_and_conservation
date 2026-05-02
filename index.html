@@ -71,6 +71,22 @@
         #autocomplete-list::-webkit-scrollbar-thumb:hover {
             background: #94a3b8; 
         }
+
+        /* Scrollbar elegante y oscuro para la tabla del Leaderboard */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #0f172a; 
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #334155; 
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #475569; 
+        }
     </style>
 </head>
 <body class="no-select text-slate-800">
@@ -110,9 +126,8 @@
                 <div class="max-w-sm mx-auto w-full mt-4 mb-4 relative text-left">
                     <input type="text" id="player-name" autocomplete="off" placeholder="Enter your name to start..." class="w-full px-6 py-4 rounded-full text-slate-800 font-bold text-xl text-center focus:outline-none focus:ring-4 focus:ring-pink-500 shadow-inner" maxlength="50">
                     
-                    <!-- MENU DESPLEGABLE DE AUTOCOMPLETADO (Oculto por defecto) -->
+                    <!-- MENU DESPLEGABLE DE AUTOCOMPLETADO -->
                     <ul id="autocomplete-list" class="hidden absolute top-[110%] left-0 right-0 bg-white rounded-2xl shadow-2xl border border-slate-200 max-h-48 overflow-y-auto z-50 text-base font-semibold">
-                        <!-- Las opciones se inyectarán aquí con JavaScript -->
                     </ul>
 
                     <p id="name-error" class="hidden text-red-300 font-semibold mt-2 drop-shadow-md text-center">Please select a valid name from the list!</p>
@@ -260,45 +275,65 @@
         </div>
     </div>
 
-    <!-- LEADERBOARD SCREEN -->
-    <div id="leaderboard-screen" class="hidden min-h-screen w-full bg-slate-900 flex flex-col items-center justify-center p-6 text-white absolute inset-0 z-40 overflow-y-auto">
-        <div class="max-w-2xl w-full space-y-6 p-8 bg-white/10 backdrop-blur-md rounded-3xl shadow-2xl border border-white/20 animate-fade-in-up mt-10 mb-10">
-            <h1 class="text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-orange-500 drop-shadow-md text-center">Live Top 10 Leaderboard</h1>
+    <!-- LEADERBOARD GLOBAL SCREEN (CLON EXACTO A LA IMAGEN OSCURA CON SCROLL INTERNO) -->
+    <div id="leaderboard-screen" class="hidden min-h-screen w-full bg-[#0b0f19] flex flex-col items-center p-4 md:p-8 text-white absolute inset-0 z-40 overflow-hidden">
+        
+        <div class="max-w-4xl w-full flex flex-col h-full max-h-[90vh] bg-slate-800 rounded-3xl shadow-2xl border border-slate-700 p-6 md:p-8 animate-fade-in-up mt-8">
             
-            <div class="bg-black/30 rounded-2xl overflow-hidden mt-6">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-white/10 text-gray-300 text-sm md:text-base uppercase tracking-wider">
-                            <th class="p-4 border-b border-white/10">Rank</th>
-                            <th class="p-4 border-b border-white/10">Name</th>
-                            <th class="p-4 border-b border-white/10 text-center">Score</th>
-                            <th class="p-4 border-b border-white/10 text-right">Time (s)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="leaderboard-list" class="text-base md:text-lg">
-                        <!-- Filled by JS -->
-                        <tr><td colspan="4" class="text-center p-4 text-gray-400">Loading live records...</td></tr>
-                    </tbody>
-                </table>
+            <h1 class="text-4xl md:text-5xl font-black text-center mb-6 text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-500 drop-shadow-sm shrink-0">Live Global Leaderboard</h1>
+            
+            <div class="bg-slate-900 rounded-2xl shadow-inner border border-slate-700/50 flex-1 overflow-hidden flex flex-col relative">
+                <div class="overflow-y-auto flex-1 custom-scrollbar">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="bg-slate-900 border-b border-slate-700 sticky top-0 z-10 shadow-md">
+                            <tr class="text-slate-400 text-xs md:text-sm uppercase tracking-widest font-bold">
+                                <th class="p-4 md:px-6 w-20">Rank</th>
+                                <th class="p-4 md:px-6">Name</th>
+                                <th class="p-4 md:px-6 text-center">Score</th>
+                                <th class="p-4 md:px-6 text-right">Time (s)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboard-list" class="text-sm md:text-base font-semibold">
+                            <!-- Filled by JS -->
+                            <tr><td colspan="4" class="text-center p-6 text-slate-500">Loading live records...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
             
-            <div class="flex justify-center mt-8">
-                <button id="lb-back-btn" onclick="switchScreen('welcome-screen')" class="w-full md:w-1/2 py-4 bg-gray-600 hover:bg-gray-500 rounded-2xl font-bold text-xl shadow-lg transition-colors flex items-center justify-center space-x-2">
-                    <span>Back</span>
+            <div class="flex justify-center mt-6 shrink-0">
+                <button id="lb-back-btn" onclick="switchScreen('welcome-screen')" class="px-12 py-4 bg-slate-700 hover:bg-slate-600 rounded-xl font-bold text-xl shadow-lg transition-colors text-white border border-slate-600 w-full md:w-auto">
+                    Back
                 </button>
             </div>
+
         </div>
     </div>
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
-        // DESHABILITAR CLIC DERECHO
+        // ==========================================
+        // SISTEMA ANTI-TRAMPA Y ANTI-HACKEOS LOCALES
+        // ==========================================
+        
+        // Deshabilitar Clic Derecho
         document.addEventListener('contextmenu', function(e) {
             e.preventDefault();
         });
 
-        // URL DE GOOGLE APPS SCRIPT
-        const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbzjLeOtqzeX6DsOFIZ2JYyMklYtddEnOP-d965Tn5AZxILfRwTAskSia8A4BsXLmIHm3g/exec"; 
+        // Deshabilitar atajos de herramientas de desarrollo (F12, Ctrl+Shift+I, etc)
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'F12' || 
+               (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) || 
+               (e.ctrlKey && e.key === 'U')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // 🚀 URL DEL SCRIPT ENCRIPTADA (Base64) - La URL final de tu Google Apps Script
+        const _0xUrl = "aHR0cHM6Ly9zY3JpcHQuZ29vZ2xlLmNvbS9tYWNyb3Mvcy9BS2Z5Y2J6eDVzbzJNUXRkZldCb0RjdXI0bmNrSEJ1M2d3X3FmVlk2d0FPRjV2ZU94c1JISGFJVEk2cm9iRmpDRmFWUFBIOENEdy9leGVj";
+        const GOOGLE_SHEETS_URL = atob(_0xUrl); 
 
         // --- GLOBAL VARIABLES ---
         let playerName = "";
@@ -318,16 +353,16 @@
         let leaderboardPollingInterval = null;
         let userIP = "unknown"; 
         
-        let availableStudentNames = []; // Almacena la lista de estudiantes
+        let availableStudentNames = []; 
 
-        // Obtener IP del usuario al cargar la página
+        // Obtener IP del usuario
         async function fetchUserIP() {
             try {
                 const res = await fetch("https://api.ipify.org?format=json");
                 const data = await res.json();
                 userIP = data.ip;
             } catch (e) {
-                console.warn("No se pudo obtener la IP", e);
+                console.warn("No se pudo obtener la IP");
             }
         }
         fetchUserIP();
@@ -346,18 +381,14 @@
         // --- LÓGICA DE AUTOCOMPLETADO DE NOMBRES ---
         async function fetchStudentNames() {
             try {
-                // Solicita al Apps Script usando el parámetro action=getNames
                 const response = await fetch(GOOGLE_SHEETS_URL + "?action=getNames");
                 const data = await response.json();
                 
                 if (Array.isArray(data) && data.length > 0) {
                     availableStudentNames = data;
-                } else {
-                    throw new Error("Formato no válido o vacío");
                 }
             } catch (e) {
-                console.warn("No se pudo cargar la hoja 'List'. Usando lista de prueba temporal.");
-                // Lista de ejemplo temporal en caso de que el Apps Script no devuelva la data aún
+                console.warn("Usando lista de respaldo.");
                 availableStudentNames = [
                     "Hugo Luque", "Maria Fernandez", "Juan Perez", "Carlos Ruiz", 
                     "Ana Gomez", "Luis Torres", "Sofia Morales", "Jorge Ramirez"
@@ -371,14 +402,13 @@
 
         playerNameInput.addEventListener('input', function() {
             const val = this.value;
-            autocompleteList.innerHTML = ''; // Limpiar lista
+            autocompleteList.innerHTML = ''; 
             
             if (!val) {
                 autocompleteList.classList.add('hidden');
                 return;
             }
 
-            // Filtrar coincidencias
             const matches = availableStudentNames.filter(name => name.toLowerCase().includes(val.toLowerCase()));
 
             if (matches.length > 0) {
@@ -387,13 +417,11 @@
                     const li = document.createElement('li');
                     li.className = "px-6 py-4 hover:bg-pink-50 cursor-pointer text-slate-700 border-b border-slate-100 last:border-none transition-colors";
                     
-                    // Resaltar la parte del texto que coincide con el input
                     const regex = new RegExp(`(${val})`, "gi");
                     li.innerHTML = match.replace(regex, "<span class='text-pink-600 font-black'>$1</span>");
                     
-                    // Al hacer clic, se asigna el valor y se cierra la lista
                     li.addEventListener('click', function(e) {
-                        e.stopPropagation(); // Evitar que el clic se propague y cierre antes de tiempo
+                        e.stopPropagation(); 
                         playerNameInput.value = match;
                         autocompleteList.classList.add('hidden');
                         document.getElementById('name-error').classList.add('hidden');
@@ -406,14 +434,12 @@
             }
         });
 
-        // Ocultar la lista si el usuario hace clic en otro lado de la pantalla
         document.addEventListener('click', function(e) {
             if (e.target !== playerNameInput && e.target !== autocompleteList) {
                 autocompleteList.classList.add('hidden');
             }
         });
 
-        // Al enfocar el input, mostrar sugerencias si ya hay texto
         playerNameInput.addEventListener('focus', function() {
             if (this.value && autocompleteList.childNodes.length > 0) {
                 autocompleteList.classList.remove('hidden');
@@ -477,280 +503,240 @@
         };
 
         const QUESTION_BANK = [
-            // Endangered
             { q: "The Bengal tiger is an ___ species due to habitat loss.", a: "Endangered" },
             { q: "A species at serious risk of extinction is called ___.", a: "Endangered" },
             { q: "Many ___ animals are protected by international laws to prevent extinction.", a: "Endangered" },
             { q: "We must protect ___ species before they disappear forever.", a: "Endangered" },
             { q: "The blue whale is an ___ marine mammal needing protection.", a: "Endangered" },
             { q: "A population with dangerously low numbers is often classified as ___.", a: "Endangered" },
-            // Sanctuary
             { q: "The elephant ___ provides a safe home for rescued animals.", a: "Sanctuary" },
             { q: "A protected area where animals can live safely is a ___.", a: "Sanctuary" },
             { q: "Hunting is strictly forbidden inside the wildlife ___.", a: "Sanctuary" },
             { q: "After being rescued from the circus, the lion was taken to a ___.", a: "Sanctuary" },
             { q: "The local bird ___ is entirely funded by donations.", a: "Sanctuary" },
             { q: "Animals that cannot return to the wild live peacefully in a ___.", a: "Sanctuary" },
-            // Habitat
             { q: "The jungle provides the perfect ___ for many colorful birds.", a: "Habitat" },
             { q: "The natural home or environment of an animal is its ___.", a: "Habitat" },
             { q: "Polar bears are losing their natural ___ due to melting ice.", a: "Habitat" },
             { q: "Protecting a species also means protecting its ___.", a: "Habitat" },
             { q: "Frogs need a damp ___ to survive and thrive.", a: "Habitat" },
             { q: "Deforestation destroys the ___ of countless forest creatures.", a: "Habitat" },
-            // Poacher
             { q: "Park rangers patrol the area to stop the ___ from hunting rhinos.", a: "Poacher" },
             { q: "A person who illegally hunts or captures wild animals is a ___.", a: "Poacher" },
             { q: "The ___ was caught trying to sell illegal ivory tusks.", a: "Poacher" },
             { q: "Anti-___ units have been deployed in the national park.", a: "Poacher" },
             { q: "It is very dangerous work to track an armed ___ in the jungle.", a: "Poacher" },
             { q: "An elephant was unfortunately killed by a ___ for its ivory.", a: "Poacher" },
-            // Captive
             { q: "The lion born in a ___ environment cannot easily be released into the wild.", a: "Captive" },
             { q: "Animals kept in confinement, not living in the wild, are ___.", a: "Captive" },
             { q: "Because the lion was raised in a ___ environment, it doesn't know how to hunt.", a: "Captive" },
             { q: "Breeding ___ animals is a key strategy for some modern zoos.", a: "Captive" },
             { q: "A ___ dolphin may not know how to survive in the open ocean.", a: "Captive" },
             { q: "These birds have been ___ since they were chicks.", a: "Captive" },
-            // Conservation
             { q: "Marine ___ projects aim to protect coral reefs.", a: "Conservation" },
             { q: "The careful protection and preservation of nature is called ___.", a: "Conservation" },
             { q: "Wildlife ___ is essential to keep our planet healthy.", a: "Conservation" },
             { q: "She donated money to a turtle ___ charity.", a: "Conservation" },
             { q: "A good ___ strategy involves the local community and education.", a: "Conservation" },
             { q: "The documentary highlighted the importance of nature ___.", a: "Conservation" },
-            // Extinct
             { q: "The dodo bird became ___ centuries ago.", a: "Extinct" },
             { q: "A species that has no living members left is ___.", a: "Extinct" },
             { q: "If we don't save the rhinos, they will soon be ___.", a: "Extinct" },
             { q: "Dinosaurs have been ___ for millions of years.", a: "Extinct" },
             { q: "An ___ species can never be brought back to life.", a: "Extinct" },
             { q: "Museums display the bones of animals that are now ___.", a: "Extinct" },
-            // Biodiversity
             { q: "The Amazon rainforest is famous for its rich ___.", a: "Biodiversity" },
             { q: "The variety of plant and animal life in a habitat is its ___.", a: "Biodiversity" },
             { q: "The rainforest is known worldwide for its incredible ___, containing millions of species.", a: "Biodiversity" },
             { q: "Loss of ___ makes ecosystems more vulnerable to diseases.", a: "Biodiversity" },
             { q: "Protecting ___ means saving different types of plants and animals.", a: "Biodiversity" },
             { q: "Coral reefs support incredible marine ___.", a: "Biodiversity" },
-            // Ecosystem
-            { q: "A pond is a small ___ where frogs, fish, and insects interact.", a: "Ecosystem" },
+            { q: "A pond is a small ___ where frogs, facility, and insects interact.", a: "Ecosystem" },
             { q: "A biological community of interacting organisms is an ___.", a: "Ecosystem" },
             { q: "Every animal plays a crucial role in its ___.", a: "Ecosystem" },
             { q: "Introducing a new predator can destroy an entire ___.", a: "Ecosystem" },
             { q: "The desert ___ is fragile and easily damaged by humans.", a: "Ecosystem" },
             { q: "Pollution in rivers affects the whole aquatic ___.", a: "Ecosystem" },
-            // Deforestation
             { q: "___ is the main reason orangutans are losing their homes.", a: "Deforestation" },
             { q: "The action of clearing a wide area of trees is known as ___.", a: "Deforestation" },
             { q: "Extensive ___ has led to massive soil erosion.", a: "Deforestation" },
             { q: "We can fight ___ by planting more trees.", a: "Deforestation" },
             { q: "Illegal logging is a major cause of global ___.", a: "Deforestation" },
             { q: "___ contributes to global climate change by reducing oxygen production.", a: "Deforestation" },
-            // Species
             { q: "There are over 3,000 ___ of snakes in the world.", a: "Species" },
             { q: "A group of living organisms consisting of similar individuals is a ___.", a: "Species" },
             { q: "A new ___ of frog was discovered in the rainforest.", a: "Species" },
             { q: "Each ___ has its own unique scientific name.", a: "Species" },
             { q: "Darwin studied how different ___ evolved over time.", a: "Species" },
             { q: "Many plant ___ are used to make natural medicines.", a: "Species" },
-            // Preservation
             { q: "The ___ of natural wetlands is critical for migrating birds.", a: "Preservation" },
             { q: "Maintaining something in its original or existing state is ___.", a: "Preservation" },
             { q: "Historical ___ also applies to ancient forests.", a: "Preservation" },
             { q: "Nature ___ societies work to keep natural areas untouched.", a: "Preservation" },
             { q: "The ___ of our oceans requires global cooperation.", a: "Preservation" },
             { q: "Strict laws ensure the ___ of the national park.", a: "Preservation" },
-            // Vulnerable
             { q: "The polar bear is considered ___ due to melting sea ice.", a: "Vulnerable" },
             { q: "A species likely to become endangered is classified as ___.", a: "Vulnerable" },
             { q: "Baby turtles are very ___ when they hatch on the beach.", a: "Vulnerable" },
             { q: "A species is labeled ___ before it becomes fully endangered.", a: "Vulnerable" },
             { q: "Small islands are incredibly ___ to rising sea levels.", a: "Vulnerable" },
             { q: "Without their mother, the cubs are extremely ___ to predators.", a: "Vulnerable" },
-            // Flora
             { q: "The researchers studied the native ___ of the desert.", a: "Flora" },
             { q: "The plants of a particular region or habitat are called its ___.", a: "Flora" },
             { q: "Hawaii has unique ___ that cannot be found anywhere else.", a: "Flora" },
             { q: "Protecting the local fauna also involves saving the local ___.", a: "Flora" },
             { q: "The botanical garden has a vast collection of tropical ___.", a: "Flora" },
             { q: "Changes in climate can drastically alter the region's ___.", a: "Flora" },
-            // Fauna
             { q: "Australia has unique ___, such as kangaroos and koalas.", a: "Fauna" },
             { q: "The animals of a particular region or habitat are its ___.", a: "Fauna" },
             { q: "___ refers to the animal life of a specific region or time period.", a: "Fauna" },
             { q: "Marine ___ was severely affected by the massive oil spill.", a: "Fauna" },
             { q: "Studying the island's ___ helps scientists understand evolution.", a: "Fauna" },
             { q: "The guide pointed out various interesting ___ during our hike.", a: "Fauna" },
-            // Predator
             { q: "The cheetah is a fast and highly effective ___.", a: "Predator" },
             { q: "An animal that naturally preys on others for food is a ___.", a: "Predator" },
             { q: "A ___ is an animal that hunts and eats other animals.", a: "Predator" },
             { q: "Smaller birds must constantly watch out for an aerial ___.", a: "Predator" },
             { q: "The shark is the apex ___ of the ocean.", a: "Predator" },
             { q: "Without any ___, the deer population grew out of control.", a: "Predator" },
-            // Prey
             { q: "Zebras are the natural ___ of lions.", a: "Prey" },
             { q: "An animal that is hunted and killed by another for food is ___.", a: "Prey" },
             { q: "A cheetah can run extremely fast to catch its ___ before it escapes.", a: "Prey" },
             { q: "Owls hunt for small ___ at night.", a: "Prey" },
             { q: "The eagle swooped down to catch its ___.", a: "Prey" },
             { q: "Animals that are ___ often have eyes on the sides of their heads.", a: "Prey" },
-            // Migration
             { q: "The great wildebeest ___ happens every year in Africa.", a: "Migration" },
             { q: "The seasonal movement of animals from one region to another is ___.", a: "Migration" },
             { q: "Every year, millions of wildebeests begin their ___ across the African plains.", a: "Migration" },
             { q: "Bird ___ is a fascinating natural phenomenon.", a: "Migration" },
             { q: "Many whales begin their ___ to warmer waters in the winter.", a: "Migration" },
             { q: "Climate change might disrupt the traditional ___ routes.", a: "Migration" },
-            // Sustainability
             { q: "Sustainable fishing practices ensure ___ for ocean life.", a: "Sustainability" },
             { q: "Avoiding the depletion of natural resources is the definition of ___.", a: "Sustainability" },
             { q: "Environmental ___ is necessary for future generations to thrive.", a: "Sustainability" },
             { q: "The company won an award for its commitment to ecological ___.", a: "Sustainability" },
             { q: "Teaching ___ helps children learn to recycle and save water.", a: "Sustainability" },
             { q: "Forestry ___ means planting a tree for every one that is cut down.", a: "Sustainability" },
-            // Reforestation
             { q: "The community organized a ___ project to plant 1,000 pines.", a: "Reforestation" },
             { q: "The process of replanting an area with trees is called ___.", a: "Reforestation" },
             { q: "___ is a positive action that helps restore destroyed forests by planting new trees.", a: "Reforestation" },
             { q: "After the severe wildfire, ___ became the main priority.", a: "Reforestation" },
             { q: "Successful ___ takes many years to see visible results.", a: "Reforestation" },
             { q: "The government funded ___ programs to combat climate change.", a: "Reforestation" },
-            // Overfishing
             { q: "___ has drastically reduced the tuna population.", a: "Overfishing" },
             { q: "Depleting the stock of fish by excessive fishing is known as ___.", a: "Overfishing" },
             { q: "Many coastal communities are suffering economically because of ___.", a: "Overfishing" },
             { q: "Banning large nets can help prevent ___ in vulnerable areas.", a: "Overfishing" },
             { q: "___ destroys marine ecosystems by removing too many fish.", a: "Overfishing" },
             { q: "Strict quotas have been introduced by the government to stop ___.", a: "Overfishing" },
-            // Exploitation
             { q: "The ___ of forests for timber harms native wildlife.", a: "Exploitation" },
             { q: "Making unfair use of resources for benefit is called ___.", a: "Exploitation" },
             { q: "We must stop the ___ of natural resources before they run out.", a: "Exploitation" },
             { q: "Animal ___ in the unregulated tourism industry is a growing concern.", a: "Exploitation" },
             { q: "The documentary exposed the ___ of captive dolphins.", a: "Exploitation" },
             { q: "Laws were passed to prevent the further ___ of the ocean floor.", a: "Exploitation" },
-            // Smuggling
             { q: "Customs agents stopped the ___ of rare parrot eggs.", a: "Smuggling" },
             { q: "The illegal transport of animals across borders is ___.", a: "Smuggling" },
             { q: "The ___ of exotic pets is a multi-million dollar illegal industry.", a: "Smuggling" },
             { q: "Dogs are often used at airports to detect wildlife ___.", a: "Smuggling" },
             { q: "___ wildlife across borders carries heavy prison penalties.", a: "Smuggling" },
             { q: "The government cracked down on the ___ of elephant ivory.", a: "Smuggling" },
-            // Reserve
             { q: "The national ___ covers millions of acres of protected land.", a: "Reserve" },
             { q: "A protected area of land set aside for wildlife is a ___.", a: "Reserve" },
             { q: "We went on an amazing safari in the famous game ___.", a: "Reserve" },
             { q: "Animals roam freely within the boundaries of the nature ___.", a: "Reserve" },
             { q: "Only a limited number of tourists can enter the ecological ___.", a: "Reserve" },
             { q: "The local indigenous tribe helps manage the wildlife ___.", a: "Reserve" },
-            // Breeding
             { q: "The zoo started a ___ program to help save the giant panda.", a: "Breeding" },
             { q: "The mating and production of offspring by animals is ___.", a: "Breeding" },
             { q: "Spring is the primary ___ season for most migratory birds.", a: "Breeding" },
             { q: "Captive ___ can help increase the population of endangered species.", a: "Breeding" },
             { q: "The ___ grounds of the sea turtles must be strictly protected.", a: "Breeding" },
             { q: "Successful ___ in zoos requires a stress-free and natural environment.", a: "Breeding" },
-            // Extinction
             { q: "Dinosaurs faced ___ millions of years ago.", a: "Extinction" },
             { q: "The state of a species dying out completely is ___.", a: "Extinction" },
             { q: "Habitat loss is the leading cause of ___ in the modern world.", a: "Extinction" },
             { q: "We are currently facing a mass ___ event due to climate change.", a: "Extinction" },
             { q: "Conservationists work tirelessly to prevent the ___ of the rhino.", a: "Extinction" },
             { q: "The threat of ___ looms over many sensitive amphibian species.", a: "Extinction" },
-            // Ecology
             { q: "Studying ___ helps us understand how climate change affects nature.", a: "Ecology" },
             { q: "The branch of biology dealing with relations of organisms is ___.", a: "Ecology" },
             { q: "She has a master's degree in marine ___.", a: "Ecology" },
             { q: "The ___ of the rainforest is incredibly complex and balanced.", a: "Ecology" },
             { q: "Urban ___ studies how wild animals adapt to living in modern cities.", a: "Ecology" },
             { q: "Professor Smith teaches advanced ___ at the local university.", a: "Ecology" },
-            // Wildlife
             { q: "You must not feed the ___ when visiting the national park.", a: "Wildlife" },
             { q: "Wild animals collectively and the native fauna are referred to as ___.", a: "Wildlife" },
             { q: "The documentary captured amazing and rare footage of African ___.", a: "Wildlife" },
             { q: "Deforestation destroys the natural habitats of local ___.", a: "Wildlife" },
             { q: "The photographer spent weeks waiting for the perfect ___ shot.", a: "Wildlife" },
             { q: "Protecting our local ___ ensures a healthy planet for everyone.", a: "Wildlife" },
-            // Threatened
             { q: "The green sea turtle is a ___ species heavily protected by law.", a: "Threatened" },
             { q: "A species vulnerable to endangerment in the near future is ___.", a: "Threatened" },
             { q: "A ___ species is one step away from becoming fully endangered.", a: "Threatened" },
             { q: "Many coral reefs are currently ___ by rising ocean temperatures.", a: "Threatened" },
             { q: "The native bird population is ___ by introduced invasive predators.", a: "Threatened" },
             { q: "Conservation efforts usually focus on protecting ___ habitats.", a: "Threatened" },
-            // Carnivore
             { q: "The wolf is a ___ that hunts in organized packs.", a: "Carnivore" },
             { q: "An animal that feeds entirely on meat is a ___.", a: "Carnivore" },
             { q: "A tiger is a strict ___ and only eats meat.", a: "Carnivore" },
             { q: "The T-Rex was a massive and fearsome ___.", a: "Carnivore" },
             { q: "As a ___, the cheetah relies on speed to catch its food.", a: "Carnivore" },
             { q: "The sharp teeth of a ___ are perfectly designed for tearing meat.", a: "Carnivore" },
-            // Herbivore
             { q: "The giraffe is a tall ___ that eats leaves from high branches.", a: "Herbivore" },
             { q: "An animal that feeds entirely on plants is a ___.", a: "Herbivore" },
             { q: "A domestic cow is a very common example of a ___.", a: "Herbivore" },
             { q: "Elephants are the largest living ___ on land.", a: "Herbivore" },
             { q: "A ___ usually has flat teeth for grinding tough plant material.", a: "Herbivore" },
             { q: "The iguana is primarily a ___, preferring a diet of leaves.", a: "Herbivore" },
-            // Omnivore
             { q: "Bears are ___ because they eat berries, fish, and insects.", a: "Omnivore" },
             { q: "An animal that eats both plants and meat is an ___.", a: "Omnivore" },
             { q: "Humans are naturally ___, consuming both vegetables and meat.", a: "Omnivore" },
             { q: "The raccoon is an ___ that will eat almost anything it finds.", a: "Omnivore" },
             { q: "An ___ has a varied diet that includes both plant and animal origin.", a: "Omnivore" },
             { q: "Pigs are well-known ___ in the farming and agricultural world.", a: "Omnivore" },
-            // Food chain
             { q: "Plankton are at the very bottom of the marine ___.", a: "Food chain" },
             { q: "A hierarchical series of organisms dependent on the next for food is a ___.", a: "Food chain" },
             { q: "Lions are positioned at the very top of the ___ in the savanna.", a: "Food chain" },
             { q: "If one species disappears, it negatively affects the entire ___.", a: "Food chain" },
             { q: "The concept of the ___ shows how energy passes between animals.", a: "Food chain" },
             { q: "Toxins can build up dangerously as they move higher up the ___.", a: "Food chain" },
-            // Adaptation
             { q: "The camel's hump is a physical ___ for surviving in the desert.", a: "Adaptation" },
             { q: "A change by which a species becomes better suited to its environment is an ___.", a: "Adaptation" },
             { q: "The camel's hump is a physical ___ that helps it survive in the hot desert.", a: "Adaptation" },
             { q: "Thick fur is an important ___ for living in very cold climates.", a: "Adaptation" },
             { q: "Chameleons use color-changing as a brilliant survival ___.", a: "Adaptation" },
             { q: "The incredibly long neck of the giraffe is an evolutionary ___.", a: "Adaptation" },
-            // Enclosure
             { q: "The monkeys swung freely inside their large zoo ___.", a: "Enclosure" },
             { q: "An area sealed off with an artificial or natural barrier is an ___.", a: "Enclosure" },
             { q: "The restless tiger paced back and forth in its ___.", a: "Enclosure" },
             { q: "Zookeepers clean every animal ___ early in the morning.", a: "Enclosure" },
             { q: "A modern zoo ___ mimics the animal's natural habitat perfectly.", a: "Enclosure" },
             { q: "The heavy fence of the ___ was reinforced for public safety.", a: "Enclosure" },
-            // Reintroduction
             { q: "The ___ of wolves into Yellowstone changed the entire ecosystem.", a: "Reintroduction" },
             { q: "The action of putting a species back into a former habitat is ___.", a: "Reintroduction" },
             { q: "The conservation program successfully managed the ___ of condors to the wild.", a: "Reintroduction" },
             { q: "Careful planning is needed for the successful ___ of captive-bred animals.", a: "Reintroduction" },
             { q: "The ___ of the beaver helped restore the local water wetlands.", a: "Reintroduction" },
             { q: "Monitoring the animals after their ___ is crucial for their survival.", a: "Reintroduction" },
-            // Marine
             { q: "Dolphins and whales are intelligent ___ mammals.", a: "Marine" },
             { q: "Relating to or found in the sea means ___.", a: "Marine" },
             { q: "Dolphins, whales, and sea turtles are all examples of ___ animals.", a: "Marine" },
             { q: "The vibrant coral reef is a vital ___ habitat.", a: "Marine" },
             { q: "Pollution from microscopic plastics is destroying ___ life.", a: "Marine" },
             { q: "She studies ___ biology at the coastal university in Florida.", a: "Marine" },
-            // Terrestrial
             { q: "___ animals breathe oxygen directly from the air.", a: "Terrestrial" },
             { q: "Living on or relating to the land means ___.", a: "Terrestrial" },
             { q: "Elephants are the largest ___ mammals on Earth.", a: "Terrestrial" },
             { q: "A sea turtle is marine, but a desert tortoise is strictly ___.", a: "Terrestrial" },
             { q: "___ ecosystems include dense forests, dry deserts, and grasslands.", a: "Terrestrial" },
             { q: "The rattlesnake is a dangerous ___ predator found in the desert.", a: "Terrestrial" },
-            // Tracker
             { q: "The expert ___ easily found the leopard's footprints in the mud.", a: "Tracker" },
             { q: "A person who follows the trail of wild animals is a ___.", a: "Tracker" },
             { q: "A skilled ___ can follow an animal quietly for miles.", a: "Tracker" },
             { q: "The local ___ helped the research team find the gorilla family.", a: "Tracker" },
             { q: "He works as a professional wildlife ___ for the national park.", a: "Tracker" },
             { q: "The ___ noticed a broken branch that indicated the bear's path.", a: "Tracker" },
-            // Ranger
             { q: "The park ___ gave us a tour and explained the rules of the reserve.", a: "Ranger" },
             { q: "A keeper of a park, forest, or area of countryside is a ___.", a: "Ranger" },
             { q: "The national park ___ gave our school group a tour.", a: "Ranger" },
@@ -812,7 +798,6 @@
             const answer = qObj.a;
             const hint = HINTS[answer] || "Think about nature and wildlife!";
 
-            // Generar distractores aleatorios
             let availableWords = VOCAB_WORDS.filter(w => w !== answer);
             availableWords = shuffleArray(availableWords);
             const distractors = availableWords.slice(0, 3);
@@ -824,7 +809,7 @@
         window.startGame = function() {
             playerName = document.getElementById('player-name').value.trim();
             
-            // VALIDACIÓN ESTRICTA DE LA LISTA: Verifica si el nombre ingresado existe en el array (ignorando mayúsculas/minúsculas)
+            // VALIDACIÓN ESTRICTA DE LA LISTA
             const isNameValid = availableStudentNames.some(name => name.toLowerCase() === playerName.toLowerCase());
 
             if (!playerName || !isNameValid) {
@@ -1099,11 +1084,21 @@
             window.switchScreen('gameover-screen');
             speak("Game Over. You did your best!");
 
+            const rawName = playerName || "Unknown";
+            const rawScore = Number(score);
+            const rawTime = Number(parseFloat(totalTimeAlive).toFixed(1));
+
+            // SISTEMA ANTI-TRAMPA: Generar token de seguridad ofuscado
+            const _0x1a2b=["\x2D\x77\x69\x6C\x64\x6C\x69\x66\x65\x32\x30\x32\x34","\x2D"];
+            const _0x3f5c = rawScore + _0x1a2b[1] + rawName + _0x1a2b[0];
+            const securityToken = btoa(unescape(encodeURIComponent(_0x3f5c)));
+
             const newRecord = {
-                name: playerName || "Unknown",
-                score: Number(score),
-                timeAlive: Number(parseFloat(totalTimeAlive).toFixed(1)),
-                ip: userIP 
+                name: rawName,
+                score: rawScore,
+                timeAlive: rawTime,
+                ip: userIP,
+                token: securityToken
             };
 
             if (GOOGLE_SHEETS_URL.trim() !== "") {
@@ -1148,7 +1143,6 @@
                 
                 let parsedData = [];
                 
-                // Intenta detectar distintas estructuras (array directo, objeto {data: [...]}, o {records: [...]})
                 if (Array.isArray(rawData)) {
                     parsedData = rawData;
                 } else if (rawData && rawData.data && Array.isArray(rawData.data)) {
@@ -1158,23 +1152,23 @@
                 }
 
                 if (parsedData.length > 0) {
-                    // Si los datos son listas directas (filas de excel)
+                    // Si recibimos un array de arrays (desde dataRange.getValues())
                     if (Array.isArray(parsedData[0])) {
-                        let nameIdx = 0, scoreIdx = 1, timeIdx = 2; // Valores por defecto según tu imagen
+                        // AQUÍ ESTÁ EL ARREGLO FINAL: 
+                        // Columna A (0) = Date
+                        // Columna B (1) = Name
+                        // Columna C (2) = Score
+                        // Columna D (3) = Time Alive
+                        let nameIdx = 1, scoreIdx = 2, timeIdx = 3; 
                         
-                        // Detectar encabezado automáticamente
-                        if (typeof parsedData[0][0] === 'string' && isNaN(Number(parsedData[0][1]))) {
-                            const header = parsedData[0].map(h => String(h).toLowerCase().trim());
-                            const n = header.indexOf('name'); if(n !== -1) nameIdx = n;
-                            const s = header.indexOf('score'); if(s !== -1) scoreIdx = s;
-                            const t = header.findIndex(h => h.includes('time')); if(t !== -1) timeIdx = t;
-                            
-                            parsedData.shift(); // Quitar encabezado de la data
+                        // Omitir si la primera fila es encabezado
+                        if (typeof parsedData[0][1] === 'string' && parsedData[0][1].toLowerCase().includes('name')) {
+                            parsedData.shift(); 
                         }
                         
                         let formatted = [];
                         for (let i = 0; i < parsedData.length; i++) {
-                            // Ignorar filas vacías
+                            // Validar que la columna nombre tenga datos
                             if(parsedData[i][nameIdx] && parsedData[i][nameIdx].toString().trim() !== "") {
                                 formatted.push({
                                     name: parsedData[i][nameIdx] || "Unknown",
@@ -1185,7 +1179,7 @@
                         }
                         leaderboardData = formatted;
                     } else {
-                        // Si ya es un arreglo de objetos (soporta variables en mayúscula o minúscula)
+                        // Si recibimos un array de objetos (nuestro nuevo script envia objetos)
                         leaderboardData = parsedData.map(item => ({
                             name: item.name || item.Name || item.NAME || "Unknown",
                             score: Number(item.score || item.Score || item.SCORE) || 0,
@@ -1193,10 +1187,8 @@
                         }));
                     }
                     
-                    // Limpiar registros nulos
                     leaderboardData = leaderboardData.filter(r => r.name !== "Unknown" && (r.score > 0 || r.timeAlive > 0));
 
-                    // Ordenamos de nuevo para asegurar que se muestre correctamente el top
                     leaderboardData.sort((a, b) => {
                         if (b.score !== a.score) return b.score - a.score;
                         return a.timeAlive - b.timeAlive;
@@ -1253,25 +1245,28 @@
                 }
             }
 
+            // LEADERBOARD GLOBAL - CLON EXACTO A LA IMAGEN OSCURA CON SCROLL
             const listEl = document.getElementById('leaderboard-list');
             if (listEl) {
                 const top50 = leaderboardData.slice(0, 50); 
                 listEl.innerHTML = '';
                 if (top50.length === 0) {
-                    listEl.innerHTML = '<tr><td colspan="4" class="text-center p-4 text-gray-400">No records yet!</td></tr>';
+                    listEl.innerHTML = '<tr><td colspan="4" class="text-center p-6 text-slate-500">Loading live records...</td></tr>';
                 } else {
                     top50.forEach((row, index) => {
                         const tr = document.createElement('tr');
-                        tr.className = 'border-b border-white/5 hover:bg-white/5 transition-colors';
-                        const isTop1 = index === 0 ? 'text-yellow-400 font-black text-2xl drop-shadow-md' : '';
-                        const isTop2 = index === 1 ? 'text-gray-300 font-bold text-xl' : '';
-                        const isTop3 = index === 2 ? 'text-amber-600 font-bold text-xl' : '';
+                        tr.className = 'lb-row hover:bg-slate-800/50 transition-colors last:border-0';
+                        
+                        let rankStyle = 'text-slate-500 font-bold text-lg md:text-xl';
+                        if (index === 0) rankStyle = 'text-yellow-400 font-black text-xl md:text-2xl drop-shadow-md';
+                        if (index === 1) rankStyle = 'text-slate-300 font-black text-lg md:text-xl drop-shadow-sm';
+                        if (index === 2) rankStyle = 'text-orange-500 font-black text-lg md:text-xl drop-shadow-sm';
 
                         tr.innerHTML = `
-                            <td class="p-4 ${isTop1 || isTop2 || isTop3}">#${index + 1}</td>
-                            <td class="p-4 font-bold truncate max-w-[120px] md:max-w-[200px]">${row.name}</td>
-                            <td class="p-4 text-center font-black text-indigo-300">${row.score}</td>
-                            <td class="p-4 text-right text-gray-400">${row.timeAlive}s</td>
+                            <td class="p-4 md:px-6 ${rankStyle}">#${index + 1}</td>
+                            <td class="p-4 md:px-6 font-bold text-white truncate max-w-[120px] md:max-w-[200px]">${row.name}</td>
+                            <td class="p-4 md:px-6 text-center font-black text-sky-400 text-lg md:text-xl">${row.score}</td>
+                            <td class="p-4 md:px-6 text-right text-slate-400">${row.timeAlive}s</td>
                         `;
                         listEl.appendChild(tr);
                     });
