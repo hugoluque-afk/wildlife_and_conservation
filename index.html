@@ -1187,7 +1187,8 @@
                         }));
                     }
                     
-                    leaderboardData = leaderboardData.filter(r => r.name !== "Unknown" && (r.score > 0 || r.timeAlive > 0));
+                    // Remover filtro de ceros para que todos aparezcan, incluyendo los de 0 puntos
+                    leaderboardData = leaderboardData.filter(r => r.name !== "Unknown");
 
                     leaderboardData.sort((a, b) => {
                         if (b.score !== a.score) return b.score - a.score;
